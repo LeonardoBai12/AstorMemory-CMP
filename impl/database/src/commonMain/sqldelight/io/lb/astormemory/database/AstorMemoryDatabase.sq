@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS scoreEntity (
+    id TEXT PRIMARY KEY NOT NULL,
+    score INTEGER NOT NULL,
+    amount INTEGER NOT NULL,
+    timeMillis INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_scores_amount_score ON scoreEntity(amount, score DESC);
+
+insertScoreEntity:
+INSERT OR REPLACE INTO scoreEntity(id, score, amount, timeMillis)
+VALUES (?, ?, ?, ?);
+
+getAllScoreEntity:
+SELECT * FROM scoreEntity
+ORDER BY score DESC;
+
+getScoreEntityByAmount:
+SELECT * FROM scoreEntity
+WHERE amount = ?
+ORDER BY score DESC;

@@ -30,3 +30,6 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":impl:database")
+include(":common:common_shared")
+include(":common:common_data")

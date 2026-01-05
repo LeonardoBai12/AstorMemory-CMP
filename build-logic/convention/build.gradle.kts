@@ -36,5 +36,9 @@ gradlePlugin {
             id = "io.lb.android.app.multiplatform"
             implementationClass = "AndroidAppMultiplatformConventionPlugin"
         }
+        register("AndroidLibraryMultiplatformConventionPlugin") {
+            id = "io.lb.android.library.multiplatform"
+            implementationClass = "AndroidLibraryMultiplatformConventionPlugin"
+        }
     }
 }
