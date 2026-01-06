@@ -40,5 +40,9 @@ gradlePlugin {
             id = "io.lb.android.library.multiplatform"
             implementationClass = "AndroidLibraryMultiplatformConventionPlugin"
         }
+        register("AstorResourceGeneratorPlugin") {
+            id = "io.lb.astor.resource.generator"
+            implementationClass = "AstorResourceGeneratorPlugin"
+        }
     }
 }

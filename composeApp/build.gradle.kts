@@ -13,3 +13,12 @@ android {
         versionName = "1.0"
     }
 }
+
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(projects.common.commonShared)
+            implementation(projects.game.data)
+        }
+    }
+}
