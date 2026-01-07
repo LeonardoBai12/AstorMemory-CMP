@@ -1,3 +1,4 @@
+import com.android.build.api.variant.impl.capitalizeFirstChar
 import extensions.COMPILE_VERSION
 import extensions.testImplementation
 import org.gradle.api.Plugin
@@ -38,8 +39,11 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
                     iosSimulatorArm64()
                 ).forEach { iosTarget ->
                     iosTarget.binaries.framework {
-                        baseName = "ComposeApp"
-                        isStatic = true
+                        baseName = project.name.capitalizeFirstChar()
+                        isStatic = false
+                    }
+                    iosTarget.binaries.all {
+                        linkerOpts.add("-lsqlite3")
                     }
                 }
 

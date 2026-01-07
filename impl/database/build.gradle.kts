@@ -37,5 +37,6 @@ sqldelight {
         create("AstorMemoryDatabase") {
             packageName.set("io.lb.astormemory.database")
         }
+        linkSqlite = true
     }
 }
