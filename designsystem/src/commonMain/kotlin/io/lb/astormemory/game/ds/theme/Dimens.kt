@@ -7,7 +7,9 @@ object Dimens {
     val smallerPadding = 12.dp
     val padding = 16.dp
     val largePadding = 24.dp
+    val bigPadding = 32.dp
     val cardCorner = 8.dp
+    val largeButtonHeight = 48.dp
     val buttonHeight = 48.dp
     val buttonCorner = 24.dp
     val logoHeight = 64.dp

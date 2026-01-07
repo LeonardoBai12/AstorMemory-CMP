@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            App()
+            AstorMemoryApp()
         }
     }
 }
@@ -23,6 +23,6 @@ class MainActivity : ComponentActivity() {
 @InternalResourceApi
 @Preview
 @Composable
-fun AppAndroidPreview() {
-    App()
+fun AstorMemoryAppAndroidPreview() {
+    AstorMemoryApp()
 }

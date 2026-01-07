@@ -54,7 +54,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-internal fun MemoryGameButtonWithBackground(
+fun MemoryGameButtonWithBackground(
     modifier: Modifier = Modifier,
     backgroundDrawable: DrawableResource,
     text: String? = null,
@@ -95,7 +95,7 @@ internal fun MemoryGameButtonWithBackground(
 }
 
 @Composable
-internal fun MemoryGameRedButton(
+fun MemoryGameRedButton(
     text: String,
     onClick: () -> Unit
 ) {
@@ -120,7 +120,7 @@ internal fun MemoryGameRedButton(
 }
 
 @Composable
-internal fun MemoryGameStopButton(
+fun MemoryGameStopButton(
     onClick: () -> Unit
 ) {
     MemoryGameButtonWithBackground(
@@ -131,7 +131,7 @@ internal fun MemoryGameStopButton(
 }
 
 @Composable
-internal fun MemoryGameRestartButton(
+fun MemoryGameRestartButton(
     onClick: () -> Unit
 ) {
     MemoryGameButtonWithBackground(
@@ -194,7 +194,7 @@ fun MemoryGameMinusButton(
 }
 
 @Composable
-internal fun MemoryGameBlueButton(
+fun MemoryGameBlueButton(
     text: String,
     onClick: () -> Unit
 ) {
@@ -220,7 +220,7 @@ internal fun MemoryGameBlueButton(
 }
 
 @Composable
-internal fun MemoryGameWhiteButton(
+fun MemoryGameWhiteButton(
     isDarkMode: Boolean = isSystemInDarkTheme(),
     text: String,
     onClick: () -> Unit
@@ -247,7 +247,7 @@ internal fun MemoryGameWhiteButton(
 
 @Preview(name = "Red Buttons - Normal Text", showBackground = true)
 @Composable
-internal fun RedButtonNormalPreview() {
+fun RedButtonNormalPreview() {
     AstorMemoryChallengeTheme(darkTheme = false) {
         Column(
             modifier = Modifier.padding(Dimens.padding),
@@ -272,7 +272,7 @@ internal fun RedButtonNormalPreview() {
 
 @Preview(name = "Red Buttons - Long Text", showBackground = true)
 @Composable
-internal fun RedButtonLongTextPreview() {
+fun RedButtonLongTextPreview() {
     AstorMemoryChallengeTheme(darkTheme = false) {
         Column(
             modifier = Modifier.padding(Dimens.padding),
@@ -297,7 +297,7 @@ internal fun RedButtonLongTextPreview() {
 
 @Preview(name = "Blue Buttons - Various Text", showBackground = true)
 @Composable
-internal fun BlueButtonPreview() {
+fun BlueButtonPreview() {
     AstorMemoryChallengeTheme(darkTheme = false) {
         Column(
             modifier = Modifier.padding(Dimens.padding),
@@ -322,7 +322,7 @@ internal fun BlueButtonPreview() {
 
 @Preview(name = "White Buttons - Light Mode", showBackground = true)
 @Composable
-internal fun WhiteButtonLightPreview() {
+fun WhiteButtonLightPreview() {
     AstorMemoryChallengeTheme(darkTheme = false) {
         Column(
             modifier = Modifier.padding(Dimens.padding),
@@ -355,7 +355,7 @@ internal fun WhiteButtonLightPreview() {
 
 @Preview(name = "White Buttons - Dark Mode", showBackground = true)
 @Composable
-internal fun WhiteButtonDarkPreview() {
+fun WhiteButtonDarkPreview() {
     AstorMemoryChallengeTheme(darkTheme = true) {
         Column(
             modifier = Modifier.padding(Dimens.padding),
@@ -383,7 +383,7 @@ internal fun WhiteButtonDarkPreview() {
 
 @Preview(name = "Icon Buttons - Light Mode", showBackground = true)
 @Composable
-internal fun IconButtonsLightPreview() {
+fun IconButtonsLightPreview() {
     AstorMemoryChallengeTheme(darkTheme = false) {
         Column(
             modifier = Modifier.padding(Dimens.padding),
@@ -431,7 +431,7 @@ internal fun IconButtonsLightPreview() {
 
 @Preview(name = "Icon Buttons - Dark Mode", showBackground = true)
 @Composable
-internal fun IconButtonsDarkPreview() {
+fun IconButtonsDarkPreview() {
     AstorMemoryChallengeTheme(darkTheme = true) {
         Column(
             modifier = Modifier.padding(Dimens.padding),
@@ -479,7 +479,7 @@ internal fun IconButtonsDarkPreview() {
 
 @Preview(name = "Buttons - Small Screen", showBackground = true, widthDp = 320, heightDp = 480)
 @Composable
-internal fun ButtonsSmallScreenPreview() {
+fun ButtonsSmallScreenPreview() {
     AstorMemoryChallengeTheme(darkTheme = false) {
         Column(
             modifier = Modifier
@@ -527,7 +527,7 @@ internal fun ButtonsSmallScreenPreview() {
 
 @Preview(name = "Extreme Text Cases", showBackground = true)
 @Composable
-internal fun ButtonsExtremeTextPreview() {
+fun ButtonsExtremeTextPreview() {
     AstorMemoryChallengeTheme(darkTheme = false) {
         Column(
             modifier = Modifier
@@ -573,7 +573,7 @@ internal fun ButtonsExtremeTextPreview() {
 
 @Preview(name = "Button States Comparison", showBackground = true)
 @Composable
-internal fun ButtonStatesComparisonPreview() {
+fun ButtonStatesComparisonPreview() {
     AstorMemoryChallengeTheme(darkTheme = false) {
         Row(
             modifier = Modifier.padding(Dimens.padding),

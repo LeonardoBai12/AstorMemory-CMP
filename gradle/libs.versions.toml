@@ -10,7 +10,7 @@ androidx-lifecycle = "2.9.6"
 android-targetSdk = "36"
 android-compileSdk = "36"
 android-minSdk = "24"
-
+navigation-compose = "2.8.0-alpha10"
 ktor = "3.3.3"
 coroutines = "1.10.2"
 serialization = "2.3.0"
@@ -43,6 +43,7 @@ compose-components-resources = { module = "org.jetbrains.compose.components:comp
 compose-components-uiToolingPreview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "composeMultiplatform" }
 compose-preview-multiplatform = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
 compose-uiTooling-multiplatform = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "composeMultiplatform" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 
 # Kotlin DateTime
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }

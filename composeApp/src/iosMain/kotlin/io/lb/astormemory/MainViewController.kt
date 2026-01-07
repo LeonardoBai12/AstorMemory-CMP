@@ -11,5 +11,5 @@ fun MainViewController() = ComposeUIViewController {
     startKoin {
         modules(appModules + platformDatabaseModule)
     }
-    App()
+    AstorMemoryApp()
 }
