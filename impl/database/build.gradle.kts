@@ -8,6 +8,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlin.datetime)
             implementation(libs.sqldelight.runtime)
@@ -18,6 +19,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.sqldelight.android.driver)
+            implementation(libs.koin.android)
         }
 
         iosMain.dependencies {
@@ -35,5 +37,6 @@ sqldelight {
         create("AstorMemoryDatabase") {
             packageName.set("io.lb.astormemory.database")
         }
+        linkSqlite = true
     }
 }

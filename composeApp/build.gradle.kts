@@ -17,8 +17,17 @@ android {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             implementation(projects.common.commonShared)
             implementation(projects.game.data)
+            implementation(projects.impl.database)
+            implementation(projects.game.data)
+            implementation(projects.game.domain)
+        }
+        androidMain.dependencies {
+            implementation(libs.koin.android)
         }
     }
 }
