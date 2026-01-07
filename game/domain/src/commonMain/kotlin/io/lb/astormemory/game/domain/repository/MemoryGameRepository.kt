@@ -3,6 +3,7 @@ package io.lb.astormemory.game.domain.repository
 import io.lb.astormemory.shared.error.MemoryGameException
 import io.lb.astormemory.shared.model.AstorCard
 import io.lb.astormemory.shared.model.Score
+import kotlinx.coroutines.CancellationException
 
 /**
  * Repository for the Memory Game.
@@ -36,6 +37,6 @@ interface MemoryGameRepository {
      *
      * @param score the score to insert.
      */
-    @Throws(MemoryGameException::class)
+    @Throws(MemoryGameException::class, CancellationException::class)
     suspend fun insertScore(score: Int, amount: Int)
 }
