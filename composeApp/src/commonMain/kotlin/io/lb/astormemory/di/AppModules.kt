@@ -7,5 +7,6 @@ import io.lb.astormemory.game.domain.di.domainModule
 val appModules = listOf(
     databaseModule,
     dataModule,
-    domainModule
+    domainModule,
+    viewModelModule
 )
