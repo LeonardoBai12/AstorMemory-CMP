@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    namespace = "io.lb.astormemory"
+    namespace = "io.lb.astormemory.app"
 
     defaultConfig {
-        applicationId = "io.lb.astormemory"
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = "io.lb.astormemory.app"
+        versionCode = 7
+        versionName = "2.0.0"
     }
 }
 
@@ -20,8 +20,10 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation.compose)
+            implementation(compose.materialIconsExtended)
+            implementation(projects.designsystem)
             implementation(projects.common.commonShared)
-            implementation(projects.game.data)
             implementation(projects.impl.database)
             implementation(projects.game.data)
             implementation(projects.game.domain)
