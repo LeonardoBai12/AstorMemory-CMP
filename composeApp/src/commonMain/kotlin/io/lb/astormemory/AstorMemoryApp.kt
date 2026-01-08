@@ -1,47 +1,21 @@
 package io.lb.astormemory
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.lb.astormemory.game.MenuScreen
+import androidx.navigation.toRoute
+import io.lb.astormemory.menu.MenuScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import io.lb.astormemory.game.data.resources.AstorResourceProvider
 import io.lb.astormemory.game.ds.theme.AstorMemoryChallengeTheme
-import io.lb.astormemory.navigation.MemoryGameScreens
-import io.lb.astormemory.shared.model.AstorCard
+import io.lb.astormemory.navigation.AstorMemoryRoutes
 import org.jetbrains.compose.resources.InternalResourceApi
-import org.jetbrains.compose.resources.decodeToImageBitmap
 
 @OptIn(InternalResourceApi::class)
 @Composable
@@ -52,9 +26,9 @@ fun AstorMemoryApp() {
     AstorMemoryChallengeTheme(darkTheme = true) {
         NavHost(
             navController = navController,
-            startDestination = MemoryGameScreens.Menu.name
+            startDestination = AstorMemoryRoutes.Menu
         ) {
-            composable(MemoryGameScreens.Menu.name) {
+            composable<AstorMemoryRoutes.Menu> {
                 MenuScreen(
                     navController = navController,
                     isDarkMode = true,
@@ -66,21 +40,21 @@ fun AstorMemoryApp() {
                 )
             }
 
-            composable("${MemoryGameScreens.Game.name}/{amount}") { backStackEntry ->
-                val amount = backStackEntry.arguments?.getString("amount")?.toIntOrNull() ?: 5
+            composable<AstorMemoryRoutes.Game> { backStackEntry ->
+                val game = backStackEntry.toRoute<AstorMemoryRoutes.Game>()
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Game Screen - Amount: $amount",
+                        text = "Game Screen - Amount: ${game.amount}",
                         style = MaterialTheme.typography.headlineLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
 
-            composable(MemoryGameScreens.HighScores.name) {
+            composable<AstorMemoryRoutes.HighScores> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -93,22 +67,21 @@ fun AstorMemoryApp() {
                 }
             }
 
-            composable("${MemoryGameScreens.GameOver.name}/{score}/{amount}") { backStackEntry ->
-                val score = backStackEntry.arguments?.getString("score")?.toIntOrNull() ?: 0
-                val amount = backStackEntry.arguments?.getString("amount")?.toIntOrNull() ?: 5
+            composable<AstorMemoryRoutes.GameOver> { backStackEntry ->
+                val gameOver = backStackEntry.toRoute<AstorMemoryRoutes.GameOver>()
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Game Over Screen - Score: $score, Amount: $amount",
+                        text = "Game Over Screen - Score: ${gameOver.score}, Amount: ${gameOver.amount}",
                         style = MaterialTheme.typography.headlineLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
 
-            composable(MemoryGameScreens.Settings.name) {
+            composable<AstorMemoryRoutes.Settings> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center

@@ -1,4 +1,4 @@
-package io.lb.astormemory.game
+package io.lb.astormemory.menu
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import astormemory.composeapp.generated.resources.Res
@@ -51,7 +50,8 @@ import io.lb.astormemory.game.ds.components.MemoryGameWhiteButton
 import io.lb.astormemory.game.ds.components.Narcisus
 import io.lb.astormemory.game.ds.theme.AstorMemoryChallengeTheme
 import io.lb.astormemory.game.ds.theme.Dimens
-import io.lb.astormemory.theme.AstormemoryDimens
+import io.lb.astormemory.navigation.AstorMemoryRoutes
+import io.lb.astormemory.theme.AstorMemoryDimens
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -67,7 +67,7 @@ internal fun MenuScreen(
     onChangeAmount: (Int) -> Unit
 ) {
     var muted by remember { mutableStateOf(isMuted) }
-    var amount = remember { mutableIntStateOf(initialAmount) }
+    val amount = remember { mutableIntStateOf(initialAmount) }
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -86,7 +86,7 @@ internal fun MenuScreen(
                     onChangeMuted(it)
                 },
                 onSettingsClick = {
-                    navController.navigate("Settings")
+                    navController.navigate(AstorMemoryRoutes.Settings)
                 }
             )
             Column(
@@ -98,10 +98,10 @@ internal fun MenuScreen(
                 Spacer(modifier = Modifier.height(Dimens.largePadding))
                 MemoryGameLogo(
                     Modifier
-                        .fillMaxWidth(AstormemoryDimens.menuLogoWidthFraction)
+                        .fillMaxWidth(AstorMemoryDimens.menuLogoWidthFraction)
                         .heightIn(
-                            min = AstormemoryDimens.menuLogoMinHeight,
-                            max = AstormemoryDimens.menuLogoMaxHeight
+                            min = AstorMemoryDimens.menuLogoMinHeight,
+                            max = AstorMemoryDimens.menuLogoMaxHeight
                         )
                 )
                 PairsAmountSelector(
@@ -113,7 +113,7 @@ internal fun MenuScreen(
                     }
                 )
                 Text(
-                    modifier = Modifier.fillMaxWidth(AstormemoryDimens.menuTextWidthFraction),
+                    modifier = Modifier.fillMaxWidth(AstorMemoryDimens.menuTextWidthFraction),
                     text = stringResource(Res.string.the_more_cards_you_play_with),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge,
@@ -216,14 +216,15 @@ private fun ButtonsColumn(
         MemoryGameRedButton(
             text = stringResource(Res.string.start_game),
             onClick = {
-                navController.navigate("Game/$amount")
+                navController.navigate(AstorMemoryRoutes.Game(amount = amount))
+
             }
         )
 
         MemoryGameBlueButton(
             text = stringResource(Res.string.highscores),
             onClick = {
-                navController.navigate("HighScores")
+                navController.navigate(AstorMemoryRoutes.HighScores)
             }
         )
 
