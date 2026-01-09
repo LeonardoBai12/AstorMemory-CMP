@@ -15,7 +15,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AstorMemoryApp()
+            AstorMemoryApp(
+                onQuitApp = {
+                    finishAffinity()
+                }
+            )
         }
     }
 }
@@ -24,5 +28,5 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AstorMemoryAppAndroidPreview() {
-    AstorMemoryApp()
+    AstorMemoryApp({})
 }

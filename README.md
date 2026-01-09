@@ -1,2 +1,2 @@
-# AstorMemory-KMP
+# AstorMemory-CMP
 

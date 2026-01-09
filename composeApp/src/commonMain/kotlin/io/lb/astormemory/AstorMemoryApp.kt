@@ -36,7 +36,9 @@ import org.koin.core.parameter.parametersOf
 @OptIn(InternalResourceApi::class)
 @Composable
 @Preview
-fun AstorMemoryApp() {
+fun AstorMemoryApp(
+    onQuitApp: () -> Unit
+) {
     val navController = rememberNavController()
 
     AstorMemoryChallengeTheme(darkTheme = true) {
@@ -75,7 +77,9 @@ fun AstorMemoryApp() {
                     initialAmount = 9,
                     isMuted = false,
                     onChangeMuted = {},
-                    onClickQuit = {},
+                    onClickQuit = {
+                        onQuitApp.invoke()
+                    },
                     onChangeAmount = {}
                 )
             }

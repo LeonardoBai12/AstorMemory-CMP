@@ -96,7 +96,11 @@ internal fun GameScreen(
                             score = event.score,
                             amount = state.amount
                         )
-                    )
+                    ) {
+                        popUpTo<AstorMemoryRoutes.Game> {
+                            inclusive = true
+                        }
+                    }
                 }
             }
         }
