@@ -3,6 +3,7 @@ package io.lb.astormemory.game.ds.theme
 import androidx.compose.ui.unit.dp
 
 object Dimens {
+    val tinyPadding = 4.dp
     val smallPadding = 8.dp
     val smallerPadding = 12.dp
     val padding = 16.dp

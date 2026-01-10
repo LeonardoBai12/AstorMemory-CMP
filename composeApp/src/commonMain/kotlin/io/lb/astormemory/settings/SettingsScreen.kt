@@ -1,5 +1,6 @@
 package io.lb.astormemory.settings
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,27 +24,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import astormemory.composeapp.generated.resources.Res
-import astormemory.composeapp.generated.resources.cards_per_column
-import astormemory.composeapp.generated.resources.cards_per_line
+import astormemory.composeapp.generated.resources.cards_height
+import astormemory.composeapp.generated.resources.cards_width
 import astormemory.composeapp.generated.resources.dark_mode
+import astormemory.composeapp.generated.resources.dynamic_layout
 import astormemory.composeapp.generated.resources.game_screen_layout
 import astormemory.composeapp.generated.resources.preview
-import io.lb.astormemory.game.ds.components.IntSelector
+import astormemory.composeapp.generated.resources.sound_effects
 import io.lb.astormemory.game.ds.components.MemoryGameBackButton
 import io.lb.astormemory.game.ds.components.MemoryGameCard
+import io.lb.astormemory.game.ds.components.VisualIntSelector
 import io.lb.astormemory.game.ds.model.GameCard
 import io.lb.astormemory.game.ds.screen.getScreenHeight
 import io.lb.astormemory.game.ds.screen.getScreenWidth
@@ -58,7 +58,11 @@ fun SettingsScreen(
     cardsPerLine: Int,
     cardsPerColumn: Int,
     isDarkMode: Boolean,
+    isDynamicLayout: Boolean,
+    isSoundEffectsEnabled: Boolean,
     onChangeDarkMode: (Boolean) -> Unit,
+    onChangeDynamicLayout: (Boolean) -> Unit,
+    onChangeSoundEffectsEnabled: (Boolean) -> Unit,
     onChangeCardsPerLine: (Int) -> Unit,
     onChangeCardsPerColumn: (Int) -> Unit
 ) {
@@ -66,6 +70,7 @@ fun SettingsScreen(
     val selectedCardsPerLine = remember { mutableIntStateOf(cardsPerLine) }
     val selectedCardsPerColumn = remember { mutableIntStateOf(cardsPerColumn) }
     val darkMode = remember { mutableStateOf(isDarkMode) }
+    val dynamicLayout = remember { mutableStateOf(isDynamicLayout) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -79,46 +84,67 @@ fun SettingsScreen(
         ) {
             BackButton(navController)
             Spacer(modifier = Modifier.height(Dimens.largePadding))
-            DarkModeSwitch(darkMode, onChangeDarkMode)
+            SettingsSwitch(
+                title = stringResource(Res.string.dark_mode),
+                value = darkMode,
+                onChange = onChangeDarkMode
+            )
             Spacer(modifier = Modifier.height(Dimens.bigPadding))
+            SettingsSwitch(
+                title = stringResource(Res.string.sound_effects),
+                value = remember { mutableStateOf(isSoundEffectsEnabled) },
+                onChange = onChangeSoundEffectsEnabled
+            )
+
             GameScreenLayoutText()
             Spacer(modifier = Modifier.height(Dimens.largePadding))
-
-            val isSmallScreen = screenWidth < 400.dp
-            if (isSmallScreen) {
-                SmallScreenContent(
-                    selectedCardsPerLine = selectedCardsPerLine,
-                    darkMode = darkMode,
-                    onChangeCardsPerLine = onChangeCardsPerLine,
-                    selectedCardsPerColumn = selectedCardsPerColumn,
-                    onChangeCardsPerColumn = onChangeCardsPerColumn
-                )
-            } else {
-                LargeScreenContent(
-                    selectedCardsPerLine = selectedCardsPerLine,
-                    darkMode = darkMode,
-                    onChangeCardsPerLine = onChangeCardsPerLine,
-                    selectedCardsPerColumn = selectedCardsPerColumn,
-                    onChangeCardsPerColumn = onChangeCardsPerColumn
-                )
-            }
-            Spacer(modifier = Modifier.height(Dimens.bigPadding))
-            Text(
-                text = stringResource(Res.string.preview),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Dimens.padding),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.height(Dimens.padding))
-            CardsPreview(
-                selectedCardsPerLine = selectedCardsPerLine.intValue,
-                selectedCardsPerColumn = selectedCardsPerColumn.intValue
+            SettingsSwitch(
+                title = stringResource(Res.string.dynamic_layout),
+                value = dynamicLayout,
+                onChange = onChangeDynamicLayout
             )
             Spacer(modifier = Modifier.height(Dimens.largePadding))
+
+
+            AnimatedVisibility(visible = dynamicLayout.value.not()) {
+                Column {
+                    val isSmallScreen = screenWidth < 400.dp
+                    if (isSmallScreen) {
+                        SmallScreenContent(
+                            selectedCardsPerLine = selectedCardsPerLine,
+                            darkMode = darkMode,
+                            onChangeCardsPerLine = onChangeCardsPerLine,
+                            selectedCardsPerColumn = selectedCardsPerColumn,
+                            onChangeCardsPerColumn = onChangeCardsPerColumn
+                        )
+                    } else {
+                        LargeScreenContent(
+                            selectedCardsPerLine = selectedCardsPerLine,
+                            darkMode = darkMode,
+                            onChangeCardsPerLine = onChangeCardsPerLine,
+                            selectedCardsPerColumn = selectedCardsPerColumn,
+                            onChangeCardsPerColumn = onChangeCardsPerColumn
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(Dimens.bigPadding))
+                    Text(
+                        text = stringResource(Res.string.preview),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Dimens.padding),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Spacer(modifier = Modifier.height(Dimens.padding))
+                    CardsPreview(
+                        selectedCardsPerLine = selectedCardsPerLine.intValue,
+                        selectedCardsPerColumn = selectedCardsPerColumn.intValue
+                    )
+                    Spacer(modifier = Modifier.height(Dimens.largePadding))
+                }
+            }
         }
     }
 }
@@ -219,21 +245,20 @@ private fun CardsPerLineContent(
     onChangeCardsPerLine: (Int) -> Unit
 ) {
     Text(
-        text = stringResource(Res.string.cards_per_line),
+        text = stringResource(Res.string.cards_width),
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.onBackground
     )
     Spacer(modifier = Modifier.height(Dimens.smallPadding))
-    IntSelector(
+    VisualIntSelector(
         intState = selectedCardsPerLine,
         minValue = 3,
         maxValue = 6,
-        spaceBetween = 12,
-        textSize = 48,
         isDarkMode = darkMode.value,
-        onChangeAmount = onChangeCardsPerLine
+        onChangeAmount = onChangeCardsPerLine,
+        inverted = true
     )
 }
 
@@ -244,28 +269,28 @@ private fun CardsPerColumnContent(
     onChangeCardsPerColumn: (Int) -> Unit
 ) {
     Text(
-        text = stringResource(Res.string.cards_per_column),
+        text = stringResource(Res.string.cards_height),
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.onBackground
     )
     Spacer(modifier = Modifier.height(Dimens.smallPadding))
-    IntSelector(
+    VisualIntSelector(
         intState = selectedCardsPerColumn,
         minValue = 5,
         maxValue = 9,
-        spaceBetween = 12,
-        textSize = 48,
         isDarkMode = darkMode.value,
-        onChangeAmount = onChangeCardsPerColumn
+        onChangeAmount = onChangeCardsPerColumn,
+        inverted = true
     )
 }
 
 @Composable
-private fun DarkModeSwitch(
-    darkMode: MutableState<Boolean>,
-    onChangeDarkMode: (Boolean) -> Unit
+private fun SettingsSwitch(
+    title: String,
+    value: MutableState<Boolean>,
+    onChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -275,16 +300,16 @@ private fun DarkModeSwitch(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = stringResource(Res.string.dark_mode),
+            text = title,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
         )
         Switch(
-            checked = darkMode.value,
+            checked = value.value,
             onCheckedChange = {
-                darkMode.value = it
-                onChangeDarkMode(it)
+                value.value = it
+                onChange(it)
             }
         )
     }
