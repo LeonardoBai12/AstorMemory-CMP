@@ -10,6 +10,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
             implementation(projects.common.commonShared)
+            implementation(projects.platform)
         }
     }
 }

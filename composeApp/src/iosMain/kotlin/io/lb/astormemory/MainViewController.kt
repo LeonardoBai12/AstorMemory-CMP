@@ -1,6 +1,7 @@
 package io.lb.astormemory
 
 import androidx.compose.ui.window.ComposeUIViewController
+import io.lb.astormemory.app.AstorMemoryApp
 import io.lb.astormemory.database.di.platformDatabaseModule
 import io.lb.astormemory.di.appModules
 import org.jetbrains.compose.resources.InternalResourceApi
