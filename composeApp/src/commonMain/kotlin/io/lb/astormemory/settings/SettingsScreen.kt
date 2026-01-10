@@ -96,6 +96,7 @@ fun SettingsScreen(
                 onChange = onChangeSoundEffectsEnabled
             )
 
+            Spacer(modifier = Modifier.height(Dimens.bigPadding))
             GameScreenLayoutText()
             Spacer(modifier = Modifier.height(Dimens.largePadding))
             SettingsSwitch(
@@ -104,7 +105,6 @@ fun SettingsScreen(
                 onChange = onChangeDynamicLayout
             )
             Spacer(modifier = Modifier.height(Dimens.largePadding))
-
 
             AnimatedVisibility(visible = dynamicLayout.value.not()) {
                 Column {

@@ -23,6 +23,7 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(compose.materialIconsExtended)
             implementation(projects.designsystem)
+            implementation(projects.platform)
             implementation(projects.common.commonShared)
             implementation(projects.impl.database)
             implementation(projects.game.data)
