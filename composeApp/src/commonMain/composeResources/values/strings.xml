@@ -17,9 +17,11 @@
     <string name="cards">cards</string>
     <string name="all">All</string>
     <string name="dark_mode">Dark mode</string>
+    <string name="dynamic_layout">Dynamic Layout</string>
+    <string name="sound_effects">Sound Effects</string>
     <string name="game_screen_layout">Game screen layout</string>
-    <string name="cards_per_line">Cards per line</string>
-    <string name="cards_per_column">Cards per column</string>
+    <string name="cards_width">Cards width</string>
+    <string name="cards_height">Cards height</string>
     <string name="preview">Preview</string>
     <string name="with_card_pairs">with %1$s card pairs</string>
     <string name="play_again">PLAY AGAIN</string>

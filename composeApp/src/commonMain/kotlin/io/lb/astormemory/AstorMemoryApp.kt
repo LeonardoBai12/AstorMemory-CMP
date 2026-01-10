@@ -13,12 +13,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import io.lb.astormemory.dynamic.calculateCardsPerColumn
+import io.lb.astormemory.dynamic.calculateCardsPerLine
 import io.lb.astormemory.game.GameScreen
 import io.lb.astormemory.game.GameViewModel
 import io.lb.astormemory.menu.MenuScreen
@@ -39,6 +43,7 @@ import org.koin.core.parameter.parametersOf
 fun AstorMemoryApp(
     onQuitApp: () -> Unit
 ) {
+    val amount = remember { mutableIntStateOf(9) }
     val navController = rememberNavController()
 
     AstorMemoryChallengeTheme(darkTheme = true) {
@@ -74,13 +79,15 @@ fun AstorMemoryApp(
                 MenuScreen(
                     navController = navController,
                     isDarkMode = true,
-                    initialAmount = 9,
+                    initialAmount = amount.value,
                     isMuted = false,
                     onChangeMuted = {},
                     onClickQuit = {
                         onQuitApp.invoke()
                     },
-                    onChangeAmount = {}
+                    onChangeAmount = {
+                        amount.value = it
+                    }
                 )
             }
 
@@ -94,8 +101,8 @@ fun AstorMemoryApp(
                     eventFlow = viewModel.eventFlow,
                     onEvent = viewModel::onEvent,
                     isDarkMode = true,
-                    cardsPerLine = 3,
-                    cardsPerColumn = 7,
+                    cardsPerLine = calculateCardsPerLine(game.amount),
+                    cardsPerColumn = calculateCardsPerColumn(game.amount),
                     onCardFlipped = {
                         // Sound effect can be played here
                     },
@@ -133,7 +140,11 @@ fun AstorMemoryApp(
                     cardsPerLine = 3,
                     cardsPerColumn = 7,
                     isDarkMode = true,
+                    isDynamicLayout = true,
+                    isSoundEffectsEnabled = true,
                     onChangeDarkMode = { },
+                    onChangeDynamicLayout = { },
+                    onChangeSoundEffectsEnabled = { },
                     onChangeCardsPerLine = { },
                     onChangeCardsPerColumn = { }
                 )
