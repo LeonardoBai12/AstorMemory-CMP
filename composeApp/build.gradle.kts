@@ -30,6 +30,10 @@ kotlin {
             implementation(projects.game.domain)
         }
         androidMain.dependencies {
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.analytics)
+            implementation(libs.firebase.crashlytics)
+            implementation(libs.integrity)
             implementation(libs.koin.android)
         }
     }
