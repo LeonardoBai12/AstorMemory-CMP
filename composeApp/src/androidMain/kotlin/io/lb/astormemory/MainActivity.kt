@@ -8,16 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import io.lb.astormemory.app.AstorMemoryApp
 import io.lb.astormemory.game.platform.audio.AudioPlayerFactory
+import io.lb.astormemory.game.platform.utils.MusicManager
+import io.lb.astormemory.music.MusicLifecycleObserver
 import org.jetbrains.compose.resources.InternalResourceApi
+import org.koin.android.ext.android.inject
 
 @InternalResourceApi
 class MainActivity : ComponentActivity() {
+    private val musicManager: MusicManager by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        val soundPlayer = AudioPlayerFactory(this)
-
+        lifecycle.addObserver(MusicLifecycleObserver(musicManager))
         setContent {
             AstorMemoryApp(
                 onQuitApp = {
