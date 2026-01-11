@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "io.lb.astormemory.app"
-        versionCode = 7
+        versionCode = 8
         versionName = "2.0.0"
     }
 }
