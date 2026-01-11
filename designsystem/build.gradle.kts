@@ -8,8 +8,11 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
             implementation(libs.kotlinx.coroutines.core)
             implementation(projects.common.commonShared)
+            implementation(projects.platform)
         }
     }
 }

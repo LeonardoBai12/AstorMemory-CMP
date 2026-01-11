@@ -145,6 +145,7 @@ private fun GameOverButtons(
         if (amount != 0) {
             MemoryGameRedButton(
                 text = stringResource(Res.string.play_again),
+                optionSelectedSound = true,
                 onClick = {
                     navController.navigate(AstorMemoryRoutes.Game(amount = amount))
                 }

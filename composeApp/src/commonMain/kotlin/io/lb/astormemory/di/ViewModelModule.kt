@@ -9,6 +9,8 @@ val viewModelModule = module {
     viewModel { params ->
         GameViewModel(
             useCases = get(),
+            audioPlayer = get(),
+            prefs = get(),
             amount = params.get()
         )
     }

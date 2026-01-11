@@ -51,11 +51,10 @@ import io.lb.astormemory.game.ds.components.MemoryGameCard
 import io.lb.astormemory.game.ds.components.MemoryGameRedButton
 import io.lb.astormemory.game.ds.components.MemoryGameRestartButton
 import io.lb.astormemory.game.ds.components.MemoryGameStopButton
-import io.lb.astormemory.game.ds.model.GameCard
-import io.lb.astormemory.game.ds.theme.AstorMemoryChallengeTheme
 import io.lb.astormemory.game.ds.theme.Dimens
+import io.lb.astormemory.game.platform.audio.AudioPlayer
+import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
 import io.lb.astormemory.navigation.AstorMemoryRoutes
-import io.lb.astormemory.shared.model.AstorCard
 import io.lb.presentation.game.GameEvent
 import io.lb.presentation.game.GameState
 import kotlinx.coroutines.CoroutineScope
@@ -65,9 +64,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
+import org.koin.compose.koinInject
 
 private const val CLICK_LOCK_DELAY = 100L
 
@@ -164,6 +161,7 @@ private fun GameTopBar(
     isDarkMode: Boolean,
     onRestart: () -> Unit
 ) {
+    val audioPlayer: AudioPlayer = koinInject()
     TopAppBar(
         modifier = Modifier.padding(top = Dimens.smallerPadding),
         title = {
@@ -192,6 +190,7 @@ private fun GameTopBar(
                         .widthIn(max = 48.dp)
                 ) {
                     MemoryGameStopButton {
+                        AstorMemoryAudio.stopShuffleEffect(audioPlayer)
                         navController.navigate(AstorMemoryRoutes.Menu) {
                             popUpTo<AstorMemoryRoutes.Menu> {
                                 inclusive = true
@@ -208,6 +207,7 @@ private fun GameTopBar(
                             .widthIn(max = 48.dp)
                     ) {
                         MemoryGameRestartButton {
+                            AstorMemoryAudio.stopShuffleEffect(audioPlayer)
                             lastSelectedCard.value = ""
                             onEvent(GameEvent.GameRestarted)
                             onRestart()

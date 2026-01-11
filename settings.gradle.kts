@@ -31,6 +31,7 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":designsystem")
+include(":platform")
 include(":impl:database")
 include(":common:common_shared")
 include(":common:common_data")
