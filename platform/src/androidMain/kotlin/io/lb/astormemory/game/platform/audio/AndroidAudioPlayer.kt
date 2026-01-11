@@ -11,6 +11,7 @@ class AndroidAudioPlayer(context: Context) : AudioPlayer {
     private var shuffleId = 0
     private var clickId = 0
     private var optionSelectedId = 0
+    val streamIds: MutableMap<Int, Int> = mutableMapOf()
 
     fun buildSoundPool(context: Context): SoundPool {
         val soundPool = SoundPool.Builder()
@@ -29,7 +30,10 @@ class AndroidAudioPlayer(context: Context) : AudioPlayer {
 
     override fun playSound(fileName: String, volume: Float) {
         val soundId = getSoundId(fileName)
-        soundPool.playEffect(soundId, volume)
+        val streamId = soundPool.playEffect(soundId, volume)
+        if (fileName == "shuffle") {
+            streamIds[soundId] = streamId
+        }
     }
 
     private fun getSoundId(fileName: String): Int = when (fileName) {
@@ -44,6 +48,11 @@ class AndroidAudioPlayer(context: Context) : AudioPlayer {
 
     override fun stopSound(fileName: String) {
         val soundId = getSoundId(fileName)
+        if (fileName == "shuffle") {
+            val streamId = streamIds[soundId] ?: return
+            soundPool.stop(streamId)
+            return
+        }
         soundPool.stop(soundId)
     }
 
@@ -51,8 +60,8 @@ class AndroidAudioPlayer(context: Context) : AudioPlayer {
         soundPool.release()
     }
 
-    private fun SoundPool.playEffect(soundId: Int, volume: Float) {
-        play(
+    private fun SoundPool.playEffect(soundId: Int, volume: Float): Int {
+        return play(
             soundId,
             volume,
             volume,

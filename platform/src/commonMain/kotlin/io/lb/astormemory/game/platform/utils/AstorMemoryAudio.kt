@@ -12,7 +12,7 @@ private const val PLAY_MATCH_DIVIDER = 2f
 object AstorMemoryAudio {
     fun playClickEffect(isMuted: Boolean, audioPlayer: AudioPlayer) {
         CoroutineScope(Dispatchers.Main).launch {
-            val volume = if (isMuted) 1f else 2f
+            val volume = if (isMuted) 0.7f else 1.7f
             audioPlayer.playSound("click", volume)
         }
     }

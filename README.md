@@ -23,17 +23,13 @@ Flip cards to reveal Astor creatures and find matching pairs. Clear the board by
 - Clean, responsive interface
 - No registration required
 
-## Demos
+## Videos
 
-<video width="640" height="360" controls>
-  <source src="docs/demo/gameplay.mov" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+### Gameplay Demo
+[![Gameplay Demo](https://img.youtube.com/vi/PrEUIlwui3g/0.jpg)](https://www.youtube.com/shorts/PrEUIlwui3g)
 
-<video width="640" height="360" controls>
-  <source src="docs/demo/full_game.mov" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+### Full App Walkthrough
+[![Full App Walkthrough](https://img.youtube.com/vi/uG82Zkc3j08/0.jpg)](https://www.youtube.com/shorts/uG82Zkc3j08)
 
 ## Technical Overview
 
