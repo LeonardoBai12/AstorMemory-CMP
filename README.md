@@ -65,7 +65,7 @@ This project demonstrates modern **Kotlin Multiplatform (KMP)** development with
 
 ## Credits
 
-- **Original Version:** [Astor Memory (Native Android)](https://github.com/LeonardoBai12/AstorMemory)
+- **Original Version:** [AstorMemory (Native Android)](https://github.com/LeonardoBai12/AstorMemory)
 - **Astor Creatures:** AI-generated artwork
 - **Background Music:** AI-composed tracks
 
