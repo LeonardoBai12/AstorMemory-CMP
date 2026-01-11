@@ -71,7 +71,11 @@ fun GameOverScreen(
             Spacer(modifier = Modifier.height(Dimens.bigPadding))
 
             Text(
-                text = stringResource(Res.string.you_won),
+                text = if (amount == 0) {
+                    "${stringResource(Res.string.you_won)}?"
+                } else {
+                    "${stringResource(Res.string.you_won)}!"
+                },
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
