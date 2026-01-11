@@ -33,3 +33,4 @@ google-services.json
 
 # Android Profiling
 *.hprof
+composeApp/release/composeApp-release.aab
