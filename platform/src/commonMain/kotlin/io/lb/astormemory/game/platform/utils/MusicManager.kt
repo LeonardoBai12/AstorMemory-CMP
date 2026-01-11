@@ -37,9 +37,11 @@ class MusicManager(private val factory: MusicPlayerFactory) {
     fun pauseAll() {
         players.values.forEach { it.pause() }
     }
-    
-    fun resumeAll() {
-        players.values.forEach { it.resume() }
+
+    fun resumeLastSong() {
+        currentTrack?.let {
+            players[it]?.resume()
+        }
     }
     
     fun stopAll() {
