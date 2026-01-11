@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.lb.astormemory.game.ds.theme.AstorMemoryChallengeTheme
 import io.lb.astormemory.game.ds.theme.Dimens
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

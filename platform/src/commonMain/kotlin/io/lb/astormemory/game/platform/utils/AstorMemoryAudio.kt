@@ -10,7 +10,33 @@ private const val FLIP_VOLUME = 0.95f
 private const val PLAY_MATCH_DIVIDER = 2f
 
 object AstorMemoryAudio {
-    
+    fun playClickEffect(isMuted: Boolean, audioPlayer: AudioPlayer) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val volume = if (isMuted) 0.5f else 1.0f
+            audioPlayer.playSound("click", volume)
+        }
+    }
+
+    fun playOptionSelectEffect(isMuted: Boolean, audioPlayer: AudioPlayer) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val volume = if (isMuted) 0.1f else 0.4f
+            audioPlayer.playSound("option_selected", volume)
+        }
+    }
+
+    fun playShuffleEffect(isMuted: Boolean, audioPlayer: AudioPlayer) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val volume = if (isMuted) 0.4f else 0.65f
+            audioPlayer.playSound("shuffle", volume)
+        }
+    }
+
+    fun stopShuffleEffect(audioPlayer: AudioPlayer) {
+        CoroutineScope(Dispatchers.Main).launch {
+            audioPlayer.stopSound("shuffle")
+        }
+    }
+
     fun playFlipEffect(isMuted: Boolean, audioPlayer: AudioPlayer) {
         CoroutineScope(Dispatchers.Main).launch {
             val volume = if (isMuted) FLIP_VOLUME / 2 else FLIP_VOLUME

@@ -48,6 +48,7 @@ fun AstorMemoryApp(onQuitApp: () -> Unit) {
                     isDarkMode = appState.isDarkMode,
                     initialAmount = appState.initialAmount,
                     isMuted = appState.isMuted,
+                    isSoundEffectsEnabled = appState.isSoundEffectsEnabled,
                     onChangeMuted = {
                         appState.isMuted = it
                         prefs.putBoolean(PreferencesKeys.IS_MUTED, it)

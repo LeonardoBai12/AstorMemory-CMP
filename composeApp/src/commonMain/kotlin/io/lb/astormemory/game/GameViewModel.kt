@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.lb.astormemory.game.domain.usecase.MemoryGameUseCases
 import io.lb.astormemory.game.ds.model.GameCard
+import io.lb.astormemory.game.platform.audio.AudioPlayer
+import io.lb.astormemory.game.platform.preferences.AppPreferences
+import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
+import io.lb.astormemory.game.platform.utils.PreferencesKeys
 import io.lb.astormemory.shared.flow.Resource
 import io.lb.astormemory.shared.model.AstorCard
 import io.lb.presentation.game.GameEvent
@@ -24,6 +28,8 @@ import kotlinx.coroutines.launch
 
 internal class GameViewModel(
     private val useCases: MemoryGameUseCases,
+    private val audioPlayer: AudioPlayer,
+    private val prefs: AppPreferences,
     private val amount: Int
 ) : ViewModel() {
 
@@ -51,7 +57,7 @@ internal class GameViewModel(
                 it
             }
         }
-        getGames(amount)
+        getCards(amount)
     }
 
     fun onEvent(event: GameEvent) {
@@ -99,7 +105,7 @@ internal class GameViewModel(
                 }
             }
             GameEvent.OnRequestGames -> {
-                getGames(amount)
+                getCards(amount)
             }
             GameEvent.GameRestarted -> {
                 onGameRestarted()
@@ -109,6 +115,7 @@ internal class GameViewModel(
 
     private fun onGameRestarted() {
         viewModelScope.launch {
+            playShuffleEffect()
             mismatches = 0
             combos.clear()
             _state.update {
@@ -176,7 +183,7 @@ internal class GameViewModel(
         }
     }
 
-    private fun getGames(amount: Int) {
+    private fun getCards(amount: Int) {
         getCardsJob?.cancel()
         getCardsJob = useCases.getMemoryGameUseCase(amount).onEach { resource ->
             when (resource) {
@@ -201,6 +208,7 @@ internal class GameViewModel(
                 }
 
                 is Resource.Success -> {
+                    playShuffleEffect()
                     cards.clear()
                     cards.addAll(resource.data ?: emptyList())
                     _state.update {
@@ -215,6 +223,19 @@ internal class GameViewModel(
         }.launchIn(CoroutineScope(Dispatchers.IO))
     }
 
+    private fun playShuffleEffect() {
+        viewModelScope.launch {
+            delay(300L)
+            val isMuted = prefs.getBoolean(PreferencesKeys.IS_MUTED, false)
+            val isSoundEnabled = prefs.getBoolean(PreferencesKeys.IS_SOUND_EFFECTS_ENABLED, true)
+
+            if (isSoundEnabled) {
+                AstorMemoryAudio.playShuffleEffect(isMuted, audioPlayer)
+                delay(amount * 200L)
+                AstorMemoryAudio.stopShuffleEffect(audioPlayer)
+            }
+        }
+    }
 
     companion object {
         private const val FLIP_DELAY = 500L
