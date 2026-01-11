@@ -151,7 +151,11 @@ private fun GameOverButtons(
                 text = stringResource(Res.string.play_again),
                 optionSelectedSound = true,
                 onClick = {
-                    navController.navigate(AstorMemoryRoutes.Game(amount = amount))
+                    navController.navigate(AstorMemoryRoutes.Game(amount = amount)) {
+                        popUpTo<AstorMemoryRoutes.Menu> {
+                            inclusive = false
+                        }
+                    }
                 }
             )
         }
