@@ -5,7 +5,7 @@
     <string name="combo_bonus">Combo Bonus: +%1$s</string>
     <string name="back">BACK</string>
     <string name="score">Score:</string>
-    <string name="you_won">You won!</string>
+    <string name="you_won">You won</string>
     <string name="settings">Settings</string>
     <string name="amount_of_card_pairs">Amount of card pairs</string>
     <string name="the_more_cards_you_play_with">The more cards you play with, the harder the game will be</string>
