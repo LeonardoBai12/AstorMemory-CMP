@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "io.lb.astormemory.app"
-        versionCode = 7
+        versionCode = 8
         versionName = "2.0.0"
     }
 }
@@ -30,6 +30,10 @@ kotlin {
             implementation(projects.game.domain)
         }
         androidMain.dependencies {
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.analytics)
+            implementation(libs.firebase.crashlytics)
+            implementation(libs.integrity)
             implementation(libs.koin.android)
         }
     }

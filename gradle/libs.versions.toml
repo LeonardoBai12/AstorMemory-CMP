@@ -18,6 +18,8 @@ serialization-json = "1.9.0"
 koin = "4.1.1"
 kotlin-datetime = "0.7.1"
 sqldelight = "2.2.1"
+firebaseBom = "34.7.0"
+integrity = "1.6.0"
 
 # Android
 coreKtx = "1.17.0"
@@ -44,6 +46,10 @@ compose-components-uiToolingPreview = { module = "org.jetbrains.compose.componen
 compose-preview-multiplatform = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
 compose-uiTooling-multiplatform = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "composeMultiplatform" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
 # Kotlin DateTime
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
