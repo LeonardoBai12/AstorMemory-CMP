@@ -25,8 +25,15 @@ Flip cards to reveal Astor creatures and find matching pairs. Clear the board by
 
 ## Demos
 
-- [Gameplay Demo](./docs/demo/gameplay.mov)
-- [Full App Walkthrough](./docs/demo/full_game.mov)
+<video width="640" height="360" controls>
+  <source src="docs/demo/gameplay.mov" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+<video width="640" height="360" controls>
+  <source src="docs/demo/full_game.mov" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ## Technical Overview
 
