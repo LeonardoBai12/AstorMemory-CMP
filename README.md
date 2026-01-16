@@ -16,7 +16,7 @@ Flip cards to reveal Astor creatures and find matching pairs. Clear the board by
 - Cross-platform game engine (Android & iOS)
 - Unique AI-generated Astor creatures fetched dynamically
 - Original background music and sound effects
-- Multiple difficulty levels (3 to 36 pairs)
+- Multiple difficulty levels (1 to 30 pairs)
 - Dark mode support
 - Configurable grid layouts
 - Local high scores
