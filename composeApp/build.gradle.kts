@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId = "io.lb.astormemory.app"
-        versionCode = 11
-        versionName = "2.1.0"
+        versionCode = 14
+        versionName = "2.2.0"
     }
 }
 

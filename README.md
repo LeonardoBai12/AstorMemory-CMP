@@ -73,6 +73,7 @@ This project demonstrates modern **Kotlin Multiplatform (KMP)** development with
 - [Lucky Bestiary](https://luckycassette.itch.io/lucky-bestiary)
 - [Farm Animals](https://finalbossblues.itch.io/farm-animals-sprite-pack)
 - [Font Pixellari](https://www.dafont.com/pt/pixellari.font)
+- [Retro 8-Bit Monster Pack](https://willibab.itch.io/retro-8-bit-monster-pack)
 ---
 
 *A cross-platform memory game showcasing modern Kotlin Multiplatform development practices.*

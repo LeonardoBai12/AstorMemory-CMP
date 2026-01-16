@@ -401,10 +401,10 @@ private fun afterCardFlipped(
 ) {
     when {
         lastSelectedCard.value.isEmpty() -> {
-            lastSelectedCard.value = state.cards[index].astorCard.name
+            lastSelectedCard.value = state.cards[index].astorCard.id
             onEvent(GameEvent.CardFlipped(index))
         }
-        lastSelectedCard.value != state.cards[index].astorCard.name -> {
+        lastSelectedCard.value != state.cards[index].astorCard.id -> {
             onEvent(GameEvent.CardFlipped(index))
             onEvent(GameEvent.CardMismatched)
             lastSelectedCard.value = ""
