@@ -46,6 +46,7 @@ import astormemory.composeapp.generated.resources.Res
 import astormemory.composeapp.generated.resources.combo_bonus
 import astormemory.composeapp.generated.resources.ops_something_went_wrong
 import astormemory.composeapp.generated.resources.try_again
+import io.lb.astormemory.game.ds.components.AstorText
 import io.lb.astormemory.game.ds.components.LoadingIndicator
 import io.lb.astormemory.game.ds.components.MemoryGameCard
 import io.lb.astormemory.game.ds.components.MemoryGameRedButton
@@ -166,7 +167,7 @@ private fun GameTopBar(
         modifier = Modifier.padding(top = Dimens.smallerPadding),
         title = {
             Column(verticalArrangement = Arrangement.Top) {
-                Text(
+                AstorText(
                     modifier = Modifier
                         .padding(horizontal = Dimens.smallerPadding)
                         .fillMaxWidth(),
@@ -222,7 +223,7 @@ private fun GameTopBar(
 @Composable
 private fun ComboContent(state: GameState, isDarkMode: Boolean) {
     if (state.currentCombo > 1) {
-        Text(
+        AstorText(
             modifier = Modifier
                 .padding(horizontal = Dimens.smallerPadding)
                 .fillMaxWidth(),
@@ -256,7 +257,7 @@ private fun ErrorMessage(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
+            AstorText(
                 text = state.message.takeIf {
                     !it.isNullOrEmpty() && it != "null"
                 } ?: stringResource(Res.string.ops_something_went_wrong),
@@ -311,7 +312,7 @@ private fun CardGrid(
     ) {
         items(
             count = state.cards.size,
-            key = { index -> index }
+            key = { index -> state.cards[index].instanceId }
         ) { index ->
             AnimatedVisibility(
                 visible = isVisible,

@@ -26,10 +26,10 @@ Flip cards to reveal Astor creatures and find matching pairs. Clear the board by
 ## Videos
 
 ### Gameplay Demo
-[![Gameplay Demo](https://img.youtube.com/vi/PrEUIlwui3g/0.jpg)](https://www.youtube.com/shorts/PrEUIlwui3g)
+[![Gameplay Demo](https://img.youtube.com/vi/k8vIy1fPf0U/0.jpg)](https://www.youtube.com/shorts/k8vIy1fPf0U)
 
 ### Full App Walkthrough
-[![Full App Walkthrough](https://img.youtube.com/vi/uG82Zkc3j08/0.jpg)](https://www.youtube.com/shorts/uG82Zkc3j08)
+[![Full App Walkthrough](https://img.youtube.com/vi/u7r2X-dAKH8/0.jpg)](https://www.youtube.com/shorts/u7r2X-dAKH8)
 
 ## Technical Overview
 
@@ -66,9 +66,12 @@ This project demonstrates modern **Kotlin Multiplatform (KMP)** development with
 ## Credits
 
 - **Original Version:** [AstorMemory (Native Android)](https://github.com/LeonardoBai12/AstorMemory)
-- **Astor Creatures:** AI-generated artwork
 - **Background Music:** AI-composed tracks
-
+- **Astor Creatures:** Assets from:
+- [Mythic Monsters I](https://willibab.itch.io/mythic-monsters-i)
+- [Mythic Monsters II](https://willibab.itch.io/mythic-monsters-ii)
+- [Lucky Bestiary](https://luckycassette.itch.io/lucky-bestiary)
+- [Farm Animals](https://finalbossblues.itch.io/farm-animals-sprite-pack)
 ---
 
 *A cross-platform memory game showcasing modern Kotlin Multiplatform development practices.*

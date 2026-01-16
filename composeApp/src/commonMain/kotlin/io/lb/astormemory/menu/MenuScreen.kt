@@ -42,6 +42,7 @@ import astormemory.composeapp.generated.resources.quit
 import astormemory.composeapp.generated.resources.settings
 import astormemory.composeapp.generated.resources.start_game
 import astormemory.composeapp.generated.resources.the_more_cards_you_play_with
+import io.lb.astormemory.game.ds.components.AstorText
 import io.lb.astormemory.game.ds.components.IntSelector
 import io.lb.astormemory.game.ds.components.MemoryGameBlueButton
 import io.lb.astormemory.game.ds.components.MemoryGameLogo
@@ -122,7 +123,7 @@ internal fun MenuScreen(
                         onChangeAmount(it)
                     }
                 )
-                Text(
+                AstorText(
                     modifier = Modifier.fillMaxWidth(AstorMemoryDimens.menuTextWidthFraction),
                     text = stringResource(Res.string.the_more_cards_you_play_with),
                     textAlign = TextAlign.Center,
@@ -150,7 +151,7 @@ private fun PairsAmountSelector(
     onChangeAmount: (Int) -> Unit
 ) {
     Spacer(modifier = Modifier.height(Dimens.bigPadding))
-    Text(
+    AstorText(
         text = stringResource(Res.string.amount_of_card_pairs),
         style = MaterialTheme.typography.headlineSmall,
         fontWeight = FontWeight.Bold,

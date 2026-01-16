@@ -32,6 +32,7 @@ import astormemory.composeapp.generated.resources.score
 import astormemory.composeapp.generated.resources.score_result
 import astormemory.composeapp.generated.resources.with_card_pairs
 import astormemory.composeapp.generated.resources.you_won
+import io.lb.astormemory.game.ds.components.AstorText
 import io.lb.astormemory.game.ds.components.MemoryGameLogo
 import io.lb.astormemory.game.ds.components.MemoryGameRedButton
 import io.lb.astormemory.game.ds.components.MemoryGameWhiteButton
@@ -70,7 +71,7 @@ fun GameOverScreen(
 
             Spacer(modifier = Modifier.height(Dimens.bigPadding))
 
-            Text(
+            AstorText(
                 text = if (amount == 0) {
                     "${stringResource(Res.string.you_won)}?"
                 } else {
@@ -94,7 +95,7 @@ fun GameOverScreen(
 @Composable
 private fun GameOverContent(score: Int, amount: Int) {
     if (score == 0) {
-        Text(
+        AstorText(
             text = stringResource(Res.string.score),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
@@ -117,7 +118,7 @@ private fun GameOverContent(score: Int, amount: Int) {
             contentScale = ContentScale.Fit
         )
     } else {
-        Text(
+        AstorText(
             text = stringResource(Res.string.score_result, score),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
@@ -125,7 +126,7 @@ private fun GameOverContent(score: Int, amount: Int) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(Dimens.padding))
-        Text(
+        AstorText(
             text = stringResource(Res.string.with_card_pairs, amount),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,

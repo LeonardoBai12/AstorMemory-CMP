@@ -50,7 +50,9 @@ fun MemoryGameCard(
     onClick: () -> Unit
 ) {
     val flipRotation by animateFloatAsState(
-        targetValue = if (card.isFlipped) CardConstants.CARD_FLIPPED_ROTATION else CardConstants.CARD_NOT_FLIPPED_ROTATION,
+        targetValue = if (card.isFlipped) {
+            CardConstants.CARD_FLIPPED_ROTATION
+        } else CardConstants.CARD_NOT_FLIPPED_ROTATION,
         animationSpec = tween(
             durationMillis = CardConstants.FLIP_ANIMATION_DURATION,
             easing = EaseInOutCubic
@@ -182,7 +184,7 @@ private fun FlippedCard(
 
             Image(
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
                 bitmap = imageBitmap,
                 contentDescription = "Astor Flipped Card"
             )

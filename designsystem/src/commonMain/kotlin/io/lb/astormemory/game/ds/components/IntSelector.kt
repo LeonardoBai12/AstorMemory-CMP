@@ -150,7 +150,7 @@ fun IntSelector(
             onChangeAmount(intState.intValue)
         }
         Spacer(modifier = Modifier.width(spaceBetween.dp))
-        Text(
+        AstorText(
             text = intState.intValue.toString(),
             fontSize = textSize.sp,
             color = MaterialTheme.colorScheme.onBackground,
