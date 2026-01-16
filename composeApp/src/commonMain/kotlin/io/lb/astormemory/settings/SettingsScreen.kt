@@ -41,6 +41,7 @@ import astormemory.composeapp.generated.resources.dynamic_layout
 import astormemory.composeapp.generated.resources.game_screen_layout
 import astormemory.composeapp.generated.resources.preview
 import astormemory.composeapp.generated.resources.sound_effects
+import io.lb.astormemory.game.ds.components.AstorText
 import io.lb.astormemory.game.ds.components.MemoryGameBackButton
 import io.lb.astormemory.game.ds.components.MemoryGameCard
 import io.lb.astormemory.game.ds.components.VisualIntSelector
@@ -127,7 +128,7 @@ fun SettingsScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(Dimens.bigPadding))
-                    Text(
+                    AstorText(
                         text = stringResource(Res.string.preview),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
@@ -151,7 +152,7 @@ fun SettingsScreen(
 
 @Composable
 private fun GameScreenLayoutText() {
-    Text(
+    AstorText(
         text = stringResource(Res.string.game_screen_layout),
         style = MaterialTheme.typography.headlineSmall,
         fontWeight = FontWeight.Bold,
@@ -244,7 +245,7 @@ private fun CardsPerLineContent(
     darkMode: MutableState<Boolean>,
     onChangeCardsPerLine: (Int) -> Unit
 ) {
-    Text(
+    AstorText(
         text = stringResource(Res.string.cards_width),
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
@@ -268,7 +269,7 @@ private fun CardsPerColumnContent(
     darkMode: MutableState<Boolean>,
     onChangeCardsPerColumn: (Int) -> Unit
 ) {
-    Text(
+    AstorText(
         text = stringResource(Res.string.cards_height),
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
@@ -299,7 +300,7 @@ private fun SettingsSwitch(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
+        AstorText(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,

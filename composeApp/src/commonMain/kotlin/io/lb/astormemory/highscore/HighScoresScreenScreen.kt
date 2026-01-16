@@ -41,6 +41,7 @@ import astormemory.composeapp.generated.resources.all
 import astormemory.composeapp.generated.resources.back
 import astormemory.composeapp.generated.resources.cards
 import astormemory.composeapp.generated.resources.filter
+import io.lb.astormemory.game.ds.components.AstorText
 import io.lb.astormemory.game.ds.components.LoadingIndicator
 import io.lb.astormemory.game.ds.components.MemoryGameLogo
 import io.lb.astormemory.game.ds.components.MemoryGameWhiteButton
@@ -120,7 +121,7 @@ private fun ScoreContent(
             )
         }
         !state.message.isNullOrEmpty() -> {
-            Text(
+            AstorText(
                 text = state.message,
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleMedium,
@@ -150,7 +151,7 @@ private fun Filter(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(
+        AstorText(
             text = stringResource(Res.string.filter),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.titleLarge,
@@ -186,7 +187,7 @@ private fun ScoresColumn(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(
+                AstorText(
                     text = "${index + 1}.",
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
@@ -194,14 +195,14 @@ private fun ScoresColumn(
                     modifier = Modifier.widthIn(min = 32.dp)
                 )
                 Spacer(modifier = Modifier.width(Dimens.padding))
-                Text(
+                AstorText(
                     text = score.score.toString(),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.width(Dimens.smallPadding))
-                Text(
+                AstorText(
                     text = "(${score.amount} ${stringResource(Res.string.cards)})",
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleMedium,
@@ -227,7 +228,7 @@ private fun FilterMenu(
             ),
             onClick = { dropDownMenuExpanded.value = true },
         ) {
-            Text(
+            AstorText(
                 text = if (selectedFilter.intValue == 0) {
                     stringResource(Res.string.all)
                 } else {
@@ -244,7 +245,7 @@ private fun FilterMenu(
             state.filters.forEach { filter ->
                 DropdownMenuItem(
                     text = {
-                        Text(
+                        AstorText(
                             text = if (filter == 0) {
                                 stringResource(Res.string.all)
                             } else {

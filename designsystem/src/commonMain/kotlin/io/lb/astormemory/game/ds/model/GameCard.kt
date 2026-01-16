@@ -1,6 +1,10 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package io.lb.astormemory.game.ds.model
 
 import io.lb.astormemory.shared.model.AstorCard
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 /**
  * Represents a game card.
@@ -12,5 +16,6 @@ import io.lb.astormemory.shared.model.AstorCard
 data class GameCard(
     var isFlipped: Boolean = false,
     var isMatched: Boolean = false,
-    val astorCard: AstorCard
+    val astorCard: AstorCard,
+    val instanceId: String = Uuid.random().toString()
 )

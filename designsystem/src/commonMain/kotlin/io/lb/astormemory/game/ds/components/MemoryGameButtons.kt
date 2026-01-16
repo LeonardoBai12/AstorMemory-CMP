@@ -112,7 +112,7 @@ fun MemoryGameButtonWithBackground(
         )
 
         if (text != null) {
-            Text(
+            AstorText(
                 text = text,
                 color = textColor ?: MaterialTheme.colorScheme.onBackground,
                 fontSize = with(LocalDensity.current) {
@@ -445,7 +445,7 @@ fun IconButtonsLightPreview() {
             verticalArrangement = Arrangement.spacedBy(Dimens.padding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
+            AstorText(
                 text = "Icon Buttons",
                 style = MaterialTheme.typography.headlineSmall
             )
@@ -458,7 +458,7 @@ fun IconButtonsLightPreview() {
                 MemoryGameBackButton(onClick = { })
             }
 
-            Text(
+            AstorText(
                 text = "Plus/Minus Buttons",
                 style = MaterialTheme.typography.titleMedium
             )
@@ -470,7 +470,7 @@ fun IconButtonsLightPreview() {
                     isDarkMode = false,
                     onClick = { }
                 )
-                Text(
+                AstorText(
                     text = "5",
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.align(Alignment.CenterVertically)
@@ -493,7 +493,7 @@ fun IconButtonsDarkPreview() {
             verticalArrangement = Arrangement.spacedBy(Dimens.padding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
+            AstorText(
                 text = "Icon Buttons - Dark",
                 style = MaterialTheme.typography.headlineSmall
             )
@@ -506,7 +506,7 @@ fun IconButtonsDarkPreview() {
                 MemoryGameBackButton(onClick = { })
             }
 
-            Text(
+            AstorText(
                 text = "Plus/Minus Buttons - Dark",
                 style = MaterialTheme.typography.titleMedium
             )
@@ -518,7 +518,7 @@ fun IconButtonsDarkPreview() {
                     isDarkMode = true,
                     onClick = { }
                 )
-                Text(
+                AstorText(
                     text = "12",
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.align(Alignment.CenterVertically)
@@ -543,7 +543,7 @@ fun ButtonsSmallScreenPreview() {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
+            AstorText(
                 text = "Small Screen (320dp)",
                 style = MaterialTheme.typography.titleMedium
             )
@@ -591,7 +591,7 @@ fun ButtonsExtremeTextPreview() {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
+            AstorText(
                 text = "Extreme Text Length Tests",
                 style = MaterialTheme.typography.headlineSmall
             )
@@ -639,7 +639,7 @@ fun ButtonStatesComparisonPreview() {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                AstorText(
                     text = "Light Theme",
                     style = MaterialTheme.typography.titleMedium
                 )
@@ -673,7 +673,7 @@ fun ButtonStatesComparisonPreview() {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                AstorText(
                     text = "Dark Theme",
                     style = MaterialTheme.typography.titleMedium
                 )
