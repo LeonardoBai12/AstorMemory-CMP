@@ -2,6 +2,9 @@ package io.lb.astormemory.game.platform.music
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFAudio.AVAudioPlayer
+import platform.AVFAudio.AVAudioSession
+import platform.AVFAudio.AVAudioSessionCategoryAmbient
+import platform.AVFAudio.setActive
 import platform.Foundation.NSBundle
 import platform.Foundation.NSURL
 
@@ -12,16 +15,22 @@ class IosMusicPlayer(private val fileName: String) : MusicPlayer {
     
     override val isPlaying: Boolean
         get() = player?.playing ?: false
-    
+
     override fun play(volume: Float) {
         if (player == null) {
+            val audioSession = AVAudioSession.sharedInstance()
+            audioSession.setCategory(
+                category = AVAudioSessionCategoryAmbient,
+                error = null
+            )
+            audioSession.setActive(true, null)
             val bundle = NSBundle.mainBundle
             val resourceName = fileName.substringBeforeLast(".")
             val extension = fileName.substringAfterLast(".")
-            
+
             val path = bundle.pathForResource(resourceName, extension)
                 ?: throw IllegalArgumentException("Music file not found: $fileName")
-            
+
             val url = NSURL.fileURLWithPath(path)
             player = AVAudioPlayer(url, error = null).apply {
                 numberOfLoops = -1
@@ -29,7 +38,7 @@ class IosMusicPlayer(private val fileName: String) : MusicPlayer {
                 prepareToPlay()
             }
         }
-        
+
         if (!isPlaying) {
             player?.currentTime = 0.0
             player?.play()

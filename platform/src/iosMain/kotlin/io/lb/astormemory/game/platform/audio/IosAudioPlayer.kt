@@ -4,6 +4,9 @@ import astormemory.platform.generated.resources.Res
 import io.lb.astormemory.game.platform.audio.AudioPlayer
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFAudio.AVAudioPlayer
+import platform.AVFAudio.AVAudioSession
+import platform.AVFAudio.AVAudioSessionCategoryAmbient
+import platform.AVFAudio.setActive
 import platform.Foundation.NSBundle
 import platform.Foundation.NSURL
 
@@ -18,6 +21,12 @@ class IosAudioPlayer : AudioPlayer {
     private val optionSelectedPlayer: AVAudioPlayer
 
     init {
+        val audioSession = AVAudioSession.sharedInstance()
+        audioSession.setCategory(
+            category = AVAudioSessionCategoryAmbient,
+            error = null
+        )
+        audioSession.setActive(true, null)
         val bundle = NSBundle.mainBundle
         flipCardPlayer = createPlayer(bundle, "flip_card_final", "mp3")
         matchEffectPlayer = createPlayer(bundle, "match_effect", "mp3")

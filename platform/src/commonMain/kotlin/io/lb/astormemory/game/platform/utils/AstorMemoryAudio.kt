@@ -12,7 +12,7 @@ private const val PLAY_MATCH_DIVIDER = 2f
 object AstorMemoryAudio {
     fun playClickEffect(isMuted: Boolean, audioPlayer: AudioPlayer) {
         CoroutineScope(Dispatchers.Main).launch {
-            val volume = if (isMuted) 0.7f else 1.7f
+            val volume = if (isMuted) 0.4f else 1.7f
             audioPlayer.playSound("click", volume)
         }
     }
@@ -26,7 +26,7 @@ object AstorMemoryAudio {
 
     fun playShuffleEffect(isMuted: Boolean, audioPlayer: AudioPlayer) {
         CoroutineScope(Dispatchers.Main).launch {
-            val volume = if (isMuted) 0.4f else 0.65f
+            val volume = if (isMuted) 0.3f else 0.65f
             audioPlayer.playSound("shuffle", volume)
         }
     }
@@ -39,7 +39,7 @@ object AstorMemoryAudio {
 
     fun playFlipEffect(isMuted: Boolean, audioPlayer: AudioPlayer) {
         CoroutineScope(Dispatchers.Main).launch {
-            val volume = if (isMuted) FLIP_VOLUME / 2 else FLIP_VOLUME
+            val volume = if (isMuted) FLIP_VOLUME / 4 else FLIP_VOLUME
             audioPlayer.playSound("flip_card_final", volume)
         }
     }
@@ -49,8 +49,7 @@ object AstorMemoryAudio {
             val isHighMatch = matches > totalAmount * 3 / 4
             val soundFile = if (isHighMatch) "match_effect" else "match_card_init"
             val baseVolume = if (isHighMatch) MATCH_VOLUME / PLAY_MATCH_DIVIDER else MATCH_VOLUME
-            val volume = if (isMuted) baseVolume / 2 else baseVolume
-            
+            val volume = if (isMuted) baseVolume / 4 else baseVolume
             audioPlayer.playSound(soundFile, volume)
         }
     }
