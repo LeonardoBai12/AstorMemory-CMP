@@ -77,3 +77,7 @@ This project demonstrates modern **Kotlin Multiplatform (KMP)** development with
 ---
 
 *A cross-platform memory game showcasing modern Kotlin Multiplatform development practices.*
+
+## Privacy Policy
+
+https://phenomenal-biscuit-d94f8a.netlify.app
