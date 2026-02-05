@@ -157,7 +157,7 @@
 		};
 		86A1B23E2F0FAB930037D3C2 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputFileListPaths = (
@@ -168,7 +168,7 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "FRAMEWORK_PATH=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/ComposeApp.framework\"\n\nif [ -d \"$FRAMEWORK_PATH\" ]; then\n    echo \"Signing ComposeApp.framework at: $FRAMEWORK_PATH\"\n    /usr/bin/codesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY}\" \\\n        --preserve-metadata=identifier,entitlements \\\n        --timestamp=none \\\n        \"$FRAMEWORK_PATH\"\n    \n    # Verificar assinatura\n    codesign --verify --verbose \"$FRAMEWORK_PATH\"\nfi\n";
 		};
