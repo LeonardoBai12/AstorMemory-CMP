@@ -157,6 +157,7 @@
 		};
 		86A1B23E2F0FAB930037D3C2 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 8;
 			files = (
 			);
