@@ -189,13 +189,16 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            awaitItem()
-            advanceUntilIdle()
+            // Drain initial states until the first load is complete
+            var state = awaitItem()
+            while (state.isLoading || state.cards.isEmpty()) state = awaitItem()
 
+            advanceUntilIdle()
             viewModel.onEvent(GameEvent.GameRestarted)
             advanceUntilIdle()
 
-            val emission = awaitItem()
+            awaitItem() // intermediate: cards=[], isLoading=true
+            val emission = awaitItem() // reloaded state
             assertFalse(emission.isLoading)
             assertEquals(10, emission.cards.size)
             assertEquals(500, emission.score)
