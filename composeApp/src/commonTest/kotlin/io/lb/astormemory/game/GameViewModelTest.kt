@@ -14,7 +14,6 @@ import io.lb.astormemory.game.platform.preferences.AppPreferences
 import io.lb.astormemory.shared.model.AstorCard
 import io.lb.astormemory.game.GameEvent
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -67,10 +66,9 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         assertTrue(viewModel.state.value.isLoading)
-        delay(200)
 
         viewModel.state.test {
-            val emission = awaitItem()
+            val emission = awaitLoaded()
             assertTrue(emission.isLoading.not())
             assertTrue(emission.cards.equalsCards(gameCards()))
             assertNull(emission.message)
@@ -83,10 +81,9 @@ internal class GameViewModelTest {
         stubAudio()
 
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
-        delay(200)
 
         viewModel.state.test {
-            val emission = awaitItem()
+            val emission = awaitLoaded()
             assertEquals("Network error", emission.message)
             assertTrue(emission.cards.isEmpty())
         }
@@ -98,10 +95,9 @@ internal class GameViewModelTest {
         stubAudio()
 
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
-        delay(200)
 
         viewModel.state.test {
-            val emission = awaitItem()
+            val emission = awaitLoaded()
             assertTrue(emission.cards.equalsCards(gameCards()))
             advanceUntilIdle()
 
@@ -125,10 +121,9 @@ internal class GameViewModelTest {
         stubAudio()
 
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
-        delay(200)
 
         viewModel.state.test {
-            val emission = awaitItem()
+            val emission = awaitLoaded()
             assertTrue(emission.cards.equalsCards(gameCards()))
             advanceUntilIdle()
 
@@ -152,10 +147,9 @@ internal class GameViewModelTest {
         stubAudio()
 
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
-        delay(200)
 
         viewModel.state.test {
-            val emission = awaitItem()
+            val emission = awaitLoaded()
             assertTrue(emission.cards.equalsCards(gameCards()))
             advanceUntilIdle()
 
@@ -198,7 +192,6 @@ internal class GameViewModelTest {
         stubAudio()
 
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
-        delay(200)
 
         viewModel.eventFlow.test {
             viewModel.onEvent(GameEvent.GameFinished)
@@ -216,12 +209,13 @@ internal class GameViewModelTest {
         stubAudio()
 
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
-        delay(200)
 
         viewModel.state.test {
-            awaitItem()
+            awaitLoaded()
             advanceUntilIdle()
+
             viewModel.onEvent(GameEvent.GameRestarted)
+            advanceUntilIdle()
 
             val reloadedState = awaitItem()
             assertTrue(reloadedState.isLoading.not())
@@ -238,6 +232,11 @@ internal class GameViewModelTest {
         mocker.every { audioPlayer.playSound(isAny(), isAny()) } returns Unit
         mocker.every { audioPlayer.stopSound(isAny()) } returns Unit
     }
+
+    // StateFlow replays its current value; on slow CI the IO coroutine may not
+    // have finished yet so the first item is still the loading state — skip it.
+    private suspend fun app.cash.turbine.ReceiveTurbine<GameState>.awaitLoaded(): GameState =
+        awaitItem().let { if (it.isLoading) awaitItem() else it }
 
     private data class CardState(val astorCard: AstorCard, val isFlipped: Boolean, val isMatched: Boolean)
 
