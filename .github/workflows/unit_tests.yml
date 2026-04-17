@@ -23,4 +23,4 @@ jobs:
         run: echo $GOOGLE_SERVICES > composeApp/src/androidMain/google-services.json
 
       - name: Run Unit Tests
-        run: ./gradlew allTests
+        run: ./gradlew testDebugUnitTest

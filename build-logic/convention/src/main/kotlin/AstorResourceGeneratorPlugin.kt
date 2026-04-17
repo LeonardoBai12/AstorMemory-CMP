@@ -63,7 +63,7 @@ class AstorResourceGeneratorPlugin : Plugin<Project> {
                 }
             }
 
-            tasks.matching { it.name.startsWith("compileKotlin") }.configureEach {
+            tasks.matching { it.name.startsWith("compile") && it.name.contains("Kotlin") }.configureEach {
                 dependsOn(generateTask)
             }
 
