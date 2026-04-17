@@ -83,7 +83,7 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            val emission = awaitLoaded()
+            val emission = awaitItem()
             assertEquals("Network error", emission.message)
             assertTrue(emission.cards.isEmpty())
         }
