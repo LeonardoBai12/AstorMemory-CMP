@@ -1,0 +1,9 @@
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - 'Composable'
+
+complexity:
+  LongParameterList:
+    functionThreshold: 12
+    constructorThreshold: 12

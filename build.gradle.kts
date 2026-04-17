@@ -27,6 +27,7 @@ detekt {
         "common/common_shared/src",
         "common/common_data/src"
     )
+    config.setFrom("detekt.yml")
     buildUponDefaultConfig = true
     parallel = true
 }
