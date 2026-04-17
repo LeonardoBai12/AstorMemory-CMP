@@ -106,6 +106,7 @@ internal class GameViewModelTest {
             advanceUntilIdle()
 
             viewModel.onEvent(GameEvent.CardFlipped(0))
+            advanceUntilIdle()
 
             val emission2 = awaitItem()
             assertTrue(
@@ -132,6 +133,7 @@ internal class GameViewModelTest {
             advanceUntilIdle()
 
             viewModel.onEvent(GameEvent.CardMatched(1))
+            advanceUntilIdle()
 
             val emission2 = awaitItem()
             assertTrue(
