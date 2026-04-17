@@ -20,6 +20,7 @@ tasks.withType<KotlinCompile>().configureEach {
 dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.detekt.gradlePlugin)
 }
 
 gradlePlugin {
@@ -43,6 +44,10 @@ gradlePlugin {
         register("AstorResourceGeneratorPlugin") {
             id = "io.lb.astor.resource.generator"
             implementationClass = "AstorResourceGeneratorPlugin"
+        }
+        register("DetektConventionPlugin") {
+            id = "io.lb.detekt"
+            implementationClass = "DetektConventionPlugin"
         }
     }
 }

@@ -25,6 +25,7 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("org.jetbrains.kotlin.multiplatform")
                 apply("org.jetbrains.kotlin.plugin.serialization")
+                apply("io.lb.detekt")
             }
 
             extensions.configure<KotlinMultiplatformExtension> {
