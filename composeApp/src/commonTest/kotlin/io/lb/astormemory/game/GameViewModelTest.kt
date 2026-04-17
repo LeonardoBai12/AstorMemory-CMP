@@ -210,11 +210,14 @@ internal class GameViewModelTest {
         mocker.every { audioPlayer.stopSound(isAny()) } returns Unit
     }
 
-    private fun astorCards() = listOf(
-        AstorCard("1", 1, "https://astorapi.co/api/v2/astor/1", ByteArray(0), "Astorbasaur"),
-        AstorCard("2", 2, "https://astorapi.co/api/v2/astor/2", ByteArray(0), "Astorsaur"),
-        AstorCard("3", 3, "https://astorapi.co/api/v2/astor/3", ByteArray(0), "Astorusaur"),
-        AstorCard("4", 4, "https://astorapi.co/api/v2/astor/4", ByteArray(0), "Astormander"),
-        AstorCard("5", 5, "https://astorapi.co/api/v2/astor/5", ByteArray(0), "Astormeleon"),
-    )
+    private fun astorCards(): List<AstorCard> {
+        val singles = listOf(
+            AstorCard("1", 1, "https://astorapi.co/api/v2/astor/1", ByteArray(0), "AstorOne"),
+            AstorCard("2", 2, "https://astorapi.co/api/v2/astor/2", ByteArray(0), "AstorTwo"),
+            AstorCard("3", 3, "https://astorapi.co/api/v2/astor/3", ByteArray(0), "AstorThree"),
+            AstorCard("4", 4, "https://astorapi.co/api/v2/astor/4", ByteArray(0), "AstorFour"),
+            AstorCard("5", 5, "https://astorapi.co/api/v2/astor/5", ByteArray(0), "AstorFive"),
+        )
+        return singles + singles
+    }
 }
