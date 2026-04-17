@@ -18,6 +18,7 @@ class AndroidLibraryMultiplatformConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("com.android.library")
+                apply("io.lb.detekt")
             }
 
             extensions.configure<LibraryExtension> {
