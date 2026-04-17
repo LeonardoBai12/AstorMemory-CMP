@@ -56,6 +56,8 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
                     commonTest.dependencies {
                         implementation(kotlin("test"))
+                        implementation(libs.findLibrary("kotlinx-coroutines-test").get())
+                        implementation(libs.findLibrary("turbine").get())
                     }
 
                     androidMain.dependencies {
@@ -65,16 +67,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
             }
 
             configureKotlinMultiplatform()
-
-            dependencies {
-                with(libs) {
-                    testImplementation(findLibrary("turbine").get())
-                    testImplementation(findLibrary("assertk").get())
-                    testImplementation(findLibrary("kotlinx-coroutines-test").get())
-                    testImplementation(findLibrary("kotlin-test-common").get())
-                    testImplementation(findLibrary("kotlin-test-annotations-common").get())
-                }
-            }
         }
     }
 

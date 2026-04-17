@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.mockmp)
     id("io.lb.kotlin.multiplatform")
     id("io.lb.android.library.multiplatform")
 }
@@ -16,4 +18,8 @@ kotlin {
 
 android {
     namespace = "io.lb.astormemory.game.domain"
+}
+
+mockmp {
+    onTest()
 }

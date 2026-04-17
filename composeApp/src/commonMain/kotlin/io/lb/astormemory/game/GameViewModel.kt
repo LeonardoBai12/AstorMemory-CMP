@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -34,7 +35,7 @@ internal class GameViewModel(
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<GameState> = MutableStateFlow(GameState())
-    val state: StateFlow<GameState> = _state
+    val state: StateFlow<GameState> = _state.asStateFlow()
 
     private var getCardsJob: Job? = null
     private val cards = mutableListOf<AstorCard>()
