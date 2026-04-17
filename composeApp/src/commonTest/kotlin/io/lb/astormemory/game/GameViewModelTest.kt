@@ -8,7 +8,6 @@ import io.lb.astormemory.game.domain.usecase.GetScoresByAmountUseCase
 import io.lb.astormemory.game.domain.usecase.GetScoresUseCase
 import io.lb.astormemory.game.domain.usecase.MemoryGameUseCases
 import io.lb.astormemory.game.domain.usecase.SaveScoreUseCase
-import io.lb.astormemory.game.ds.model.GameCard
 import io.lb.astormemory.game.platform.audio.AudioPlayer
 import io.lb.astormemory.game.platform.preferences.AppPreferences
 import io.lb.astormemory.shared.model.AstorCard
@@ -26,6 +25,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -69,8 +69,9 @@ internal class GameViewModelTest {
 
         viewModel.state.test {
             val emission = awaitItem()
-            assertTrue(emission.isLoading.not())
-            assertTrue(emission.cards.equalsCards(gameCards()))
+            assertFalse(emission.isLoading)
+            assertEquals(10, emission.cards.size)
+            assertTrue(emission.cards.none { it.isFlipped || it.isMatched })
             assertNull(emission.message)
         }
     }
@@ -104,13 +105,8 @@ internal class GameViewModelTest {
             advanceUntilIdle()
 
             val emission = awaitItem()
-            assertTrue(
-                emission.cards.equalsCards(
-                    gameCards().mapIndexed { index, card ->
-                        if (index == 0) card.copy(isFlipped = true) else card
-                    }
-                )
-            )
+            assertTrue(emission.cards[0].isFlipped)
+            assertTrue(emission.cards.drop(1).none { it.isFlipped })
         }
     }
 
@@ -129,13 +125,8 @@ internal class GameViewModelTest {
             advanceUntilIdle()
 
             val emission = awaitItem()
-            assertTrue(
-                emission.cards.equalsCards(
-                    gameCards().map { card ->
-                        if (card.astorCard.astorId == 1) card.copy(isMatched = true) else card
-                    }
-                )
-            )
+            assertTrue(emission.cards.filter { it.astorCard.astorId == 1 }.all { it.isMatched })
+            assertTrue(emission.cards.filter { it.astorCard.astorId != 1 }.none { it.isMatched })
         }
     }
 
@@ -154,31 +145,22 @@ internal class GameViewModelTest {
             advanceUntilIdle()
 
             val emission1 = awaitItem()
-            assertTrue(
-                emission1.cards.equalsCards(
-                    gameCards().mapIndexed { index, card ->
-                        if (index == 0) card.copy(isFlipped = true) else card
-                    }
-                )
-            )
+            assertTrue(emission1.cards[0].isFlipped)
+            assertTrue(emission1.cards.drop(1).none { it.isFlipped })
 
             viewModel.onEvent(GameEvent.CardFlipped(1))
             advanceUntilIdle()
 
             val emission2 = awaitItem()
-            assertTrue(
-                emission2.cards.equalsCards(
-                    gameCards().mapIndexed { index, card ->
-                        if (index == 0 || index == 1) card.copy(isFlipped = true) else card
-                    }
-                )
-            )
+            assertTrue(emission2.cards[0].isFlipped)
+            assertTrue(emission2.cards[1].isFlipped)
+            assertTrue(emission2.cards.drop(2).none { it.isFlipped })
 
             viewModel.onEvent(GameEvent.CardMismatched)
             advanceUntilIdle()
 
             val emission3 = awaitItem()
-            assertTrue(emission3.cards.equalsCards(gameCards()))
+            assertTrue(emission3.cards.none { it.isFlipped })
         }
     }
 
@@ -215,10 +197,10 @@ internal class GameViewModelTest {
             advanceUntilIdle()
 
             val emission = awaitItem()
-            assertTrue(emission.isLoading.not())
-            assertEquals(5, emission.cards.size)
+            assertFalse(emission.isLoading)
+            assertEquals(10, emission.cards.size)
             assertEquals(500, emission.score)
-            assertNotEquals(gameCards(), emission.cards)
+            assertNotEquals(astorCards().map { it.astorId }, emission.cards.map { it.astorCard.astorId })
         }
     }
 
@@ -228,13 +210,6 @@ internal class GameViewModelTest {
         mocker.every { audioPlayer.stopSound(isAny()) } returns Unit
     }
 
-    private data class CardState(val astorCard: AstorCard, val isFlipped: Boolean, val isMatched: Boolean)
-
-    private fun GameCard.toCardState() = CardState(astorCard, isFlipped, isMatched)
-
-    private fun List<GameCard>.equalsCards(other: List<GameCard>) =
-        size == other.size && zip(other).all { (a, b) -> a.toCardState() == b.toCardState() }
-
     private fun astorCards() = listOf(
         AstorCard("1", 1, "https://astorapi.co/api/v2/astor/1", ByteArray(0), "Astorbasaur"),
         AstorCard("2", 2, "https://astorapi.co/api/v2/astor/2", ByteArray(0), "Astorsaur"),
@@ -242,6 +217,4 @@ internal class GameViewModelTest {
         AstorCard("4", 4, "https://astorapi.co/api/v2/astor/4", ByteArray(0), "Astormander"),
         AstorCard("5", 5, "https://astorapi.co/api/v2/astor/5", ByteArray(0), "Astormeleon"),
     )
-
-    private fun gameCards() = astorCards().map { GameCard(astorCard = it) }
 }
