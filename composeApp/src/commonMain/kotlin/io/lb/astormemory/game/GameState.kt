@@ -1,4 +1,4 @@
-package io.lb.presentation.game
+package io.lb.astormemory.game
 
 import io.lb.astormemory.game.ds.model.GameCard
 

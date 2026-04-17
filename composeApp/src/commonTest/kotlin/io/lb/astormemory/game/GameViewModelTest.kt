@@ -12,7 +12,7 @@ import io.lb.astormemory.game.ds.model.GameCard
 import io.lb.astormemory.game.platform.audio.AudioPlayer
 import io.lb.astormemory.game.platform.preferences.AppPreferences
 import io.lb.astormemory.shared.model.AstorCard
-import io.lb.presentation.game.GameEvent
+import io.lb.astormemory.game.GameEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher

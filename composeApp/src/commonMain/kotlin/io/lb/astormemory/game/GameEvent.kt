@@ -1,4 +1,4 @@
-package io.lb.presentation.game
+package io.lb.astormemory.game
 
 /**
  * Represents an event that occurs in the game.

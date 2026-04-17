@@ -56,8 +56,8 @@ import io.lb.astormemory.game.ds.theme.Dimens
 import io.lb.astormemory.game.platform.audio.AudioPlayer
 import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
 import io.lb.astormemory.navigation.AstorMemoryRoutes
-import io.lb.presentation.game.GameEvent
-import io.lb.presentation.game.GameState
+import io.lb.astormemory.game.GameEvent
+import io.lb.astormemory.game.GameState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

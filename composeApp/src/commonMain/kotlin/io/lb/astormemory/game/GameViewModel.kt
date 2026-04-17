@@ -10,8 +10,8 @@ import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
 import io.lb.astormemory.game.platform.utils.PreferencesKeys
 import io.lb.astormemory.shared.flow.Resource
 import io.lb.astormemory.shared.model.AstorCard
-import io.lb.presentation.game.GameEvent
-import io.lb.presentation.game.GameState
+import io.lb.astormemory.game.GameEvent
+import io.lb.astormemory.game.GameState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
