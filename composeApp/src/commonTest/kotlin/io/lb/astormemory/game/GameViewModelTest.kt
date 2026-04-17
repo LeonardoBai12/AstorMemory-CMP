@@ -67,7 +67,7 @@ internal class GameViewModelTest {
         assertTrue(viewModel.state.value.isLoading)
 
         viewModel.state.test {
-            val emission = awaitItem()
+            val emission = awaitLoaded()
             assertFalse(emission.isLoading)
             assertEquals(10, emission.cards.size)
             assertTrue(emission.cards.none { it.isFlipped || it.isMatched })
@@ -83,7 +83,7 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            val emission = awaitItem()
+            val emission = awaitLoaded()
             assertEquals("Network error", emission.message)
             assertTrue(emission.cards.isEmpty())
         }
@@ -97,7 +97,7 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            awaitItem()
+            awaitLoaded()
             advanceUntilIdle()
 
             viewModel.onEvent(GameEvent.CardFlipped(0))
@@ -117,7 +117,7 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            awaitItem()
+            awaitLoaded()
             advanceUntilIdle()
 
             viewModel.onEvent(GameEvent.CardMatched(1))
@@ -137,7 +137,7 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            awaitItem()
+            awaitLoaded()
             advanceUntilIdle()
 
             viewModel.onEvent(GameEvent.CardFlipped(0))
@@ -189,11 +189,9 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            // Drain initial states until the first load is complete
-            var state = awaitItem()
-            while (state.isLoading || state.cards.isEmpty()) state = awaitItem()
-
+            awaitLoaded()
             advanceUntilIdle()
+
             viewModel.onEvent(GameEvent.GameRestarted)
             advanceUntilIdle()
 
@@ -210,6 +208,15 @@ internal class GameViewModelTest {
         mocker.every { prefs.getBoolean(isAny(), isAny()) } returns false
         mocker.every { audioPlayer.playSound(isAny(), isAny()) } returns Unit
         mocker.every { audioPlayer.stopSound(isAny()) } returns Unit
+    }
+
+    // Drains loading/intermediate states so the caller always starts from the fully loaded state.
+    // Real Dispatchers.IO means IO can complete at any point — this makes tests deterministic
+    // regardless of whether the first emission is the loading state or the loaded state.
+    private suspend fun app.cash.turbine.ReceiveTurbine<GameState>.awaitLoaded(): GameState {
+        var state = awaitItem()
+        while (state.isLoading || state.cards.isEmpty()) state = awaitItem()
+        return state
     }
 
     private fun astorCards(): List<AstorCard> {
