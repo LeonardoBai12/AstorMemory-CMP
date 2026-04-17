@@ -26,7 +26,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -200,7 +199,7 @@ internal class GameViewModelTest {
             assertFalse(emission.isLoading)
             assertEquals(10, emission.cards.size)
             assertEquals(500, emission.score)
-            assertNotEquals(astorCards().map { it.astorId }, emission.cards.map { it.astorCard.astorId })
+            assertTrue(emission.cards.none { it.isFlipped || it.isMatched })
         }
     }
 
