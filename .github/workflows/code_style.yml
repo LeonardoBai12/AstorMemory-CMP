@@ -8,7 +8,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run detekt
-        uses: detekt/detekt-action@v1
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          args: --build-upon-default-config
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Validate Code Style
+        run: ./gradlew detekt

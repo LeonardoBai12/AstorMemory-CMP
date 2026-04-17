@@ -13,4 +13,20 @@ plugins {
     alias(libs.plugins.mockmp) apply false
     alias(libs.plugins.android.kotlin.multiplatform.library) apply false
     alias(libs.plugins.android.lint) apply false
+    alias(libs.plugins.detekt) apply true
+}
+
+detekt {
+    source.setFrom(
+        "composeApp/src",
+        "game/domain/src",
+        "game/data/src",
+        "designsystem/src",
+        "platform/src",
+        "impl/database/src",
+        "common/common_shared/src",
+        "common/common_data/src"
+    )
+    buildUponDefaultConfig = true
+    parallel = true
 }
