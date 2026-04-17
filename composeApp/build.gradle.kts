@@ -1,5 +1,7 @@
 plugins {
     id("io.lb.android.app.multiplatform")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.mockmp)
     id("io.lb.kotlin.multiplatform")
     id("io.lb.compose.multiplatform")
 }
@@ -37,4 +39,8 @@ kotlin {
             implementation(libs.koin.android)
         }
     }
+}
+
+mockmp {
+    onTest()
 }

@@ -18,6 +18,7 @@ class AndroidAppMultiplatformConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("com.android.application")
+                apply("io.lb.detekt")
             }
 
             extensions.configure<ApplicationExtension> {

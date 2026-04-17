@@ -86,6 +86,8 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 # Plugins
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version = "1.23.7" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version = "1.23.7" }
 
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
@@ -109,7 +111,8 @@ kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = 
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
 ktor-plugin = { id = "io.ktor.plugin", version.ref = "ktor" }
-ksp = { id = "com.google.devtools.ksp", version = "2.1.10-1.0.31" }
-mockmp = { id = "org.kodein.mock.mockmp", version = "2.0.0" }
+ksp = { id = "com.google.devtools.ksp", version = "2.3.6" }
+mockmp = { id = "org.kodein.mock.mockmp", version = "2.0.2" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.7" }
