@@ -68,7 +68,7 @@ internal class GameViewModelTest {
         assertTrue(viewModel.state.value.isLoading)
 
         viewModel.state.test {
-            val emission = awaitLoaded()
+            val emission = awaitItem()
             assertTrue(emission.isLoading.not())
             assertTrue(emission.cards.equalsCards(gameCards()))
             assertNull(emission.message)
@@ -83,7 +83,7 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            val emission = awaitLoaded()
+            val emission = awaitItem()
             assertEquals("Network error", emission.message)
             assertTrue(emission.cards.isEmpty())
         }
@@ -97,16 +97,15 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            val emission = awaitLoaded()
-            assertTrue(emission.cards.equalsCards(gameCards()))
+            awaitItem()
             advanceUntilIdle()
 
             viewModel.onEvent(GameEvent.CardFlipped(0))
             advanceUntilIdle()
 
-            val emission2 = awaitItem()
+            val emission = awaitItem()
             assertTrue(
-                emission2.cards.equalsCards(
+                emission.cards.equalsCards(
                     gameCards().mapIndexed { index, card ->
                         if (index == 0) card.copy(isFlipped = true) else card
                     }
@@ -123,16 +122,15 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            val emission = awaitLoaded()
-            assertTrue(emission.cards.equalsCards(gameCards()))
+            awaitItem()
             advanceUntilIdle()
 
             viewModel.onEvent(GameEvent.CardMatched(1))
             advanceUntilIdle()
 
-            val emission2 = awaitItem()
+            val emission = awaitItem()
             assertTrue(
-                emission2.cards.equalsCards(
+                emission.cards.equalsCards(
                     gameCards().map { card ->
                         if (card.astorCard.astorId == 1) card.copy(isMatched = true) else card
                     }
@@ -149,16 +147,15 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            val emission = awaitLoaded()
-            assertTrue(emission.cards.equalsCards(gameCards()))
+            awaitItem()
             advanceUntilIdle()
 
             viewModel.onEvent(GameEvent.CardFlipped(0))
             advanceUntilIdle()
 
-            val emission2 = awaitItem()
+            val emission1 = awaitItem()
             assertTrue(
-                emission2.cards.equalsCards(
+                emission1.cards.equalsCards(
                     gameCards().mapIndexed { index, card ->
                         if (index == 0) card.copy(isFlipped = true) else card
                     }
@@ -168,9 +165,9 @@ internal class GameViewModelTest {
             viewModel.onEvent(GameEvent.CardFlipped(1))
             advanceUntilIdle()
 
-            val emission3 = awaitItem()
+            val emission2 = awaitItem()
             assertTrue(
-                emission3.cards.equalsCards(
+                emission2.cards.equalsCards(
                     gameCards().mapIndexed { index, card ->
                         if (index == 0 || index == 1) card.copy(isFlipped = true) else card
                     }
@@ -180,8 +177,8 @@ internal class GameViewModelTest {
             viewModel.onEvent(GameEvent.CardMismatched)
             advanceUntilIdle()
 
-            val emission4 = awaitItem()
-            assertTrue(emission4.cards.equalsCards(gameCards()))
+            val emission3 = awaitItem()
+            assertTrue(emission3.cards.equalsCards(gameCards()))
         }
     }
 
@@ -211,32 +208,25 @@ internal class GameViewModelTest {
         viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
 
         viewModel.state.test {
-            awaitLoaded()
+            awaitItem()
             advanceUntilIdle()
 
             viewModel.onEvent(GameEvent.GameRestarted)
             advanceUntilIdle()
 
-            val reloadedState = awaitItem()
-            assertTrue(reloadedState.isLoading.not())
-            assertEquals(5, reloadedState.cards.size)
-            assertEquals(500, reloadedState.score)
-            assertNotEquals(gameCards(), reloadedState.cards)
+            val emission = awaitItem()
+            assertTrue(emission.isLoading.not())
+            assertEquals(5, emission.cards.size)
+            assertEquals(500, emission.score)
+            assertNotEquals(gameCards(), emission.cards)
         }
     }
 
-    // AudioPlayer and AppPreferences stubs — prevent "no behavior defined" errors
-    // since playShuffleEffect() accesses them as a side effect of card loading
     private fun stubAudio() {
         mocker.every { prefs.getBoolean(isAny(), isAny()) } returns false
         mocker.every { audioPlayer.playSound(isAny(), isAny()) } returns Unit
         mocker.every { audioPlayer.stopSound(isAny()) } returns Unit
     }
-
-    // StateFlow replays its current value; on slow CI the IO coroutine may not
-    // have finished yet so the first item is still the loading state — skip it.
-    private suspend fun app.cash.turbine.ReceiveTurbine<GameState>.awaitLoaded(): GameState =
-        awaitItem().let { if (it.isLoading) awaitItem() else it }
 
     private data class CardState(val astorCard: AstorCard, val isFlipped: Boolean, val isMatched: Boolean)
 
