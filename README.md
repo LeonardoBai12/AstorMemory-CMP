@@ -1,6 +1,6 @@
 # AstorMemory
 
-A classic memory matching game featuring AI-generated fantasy creatures called "Astors" with original background music. Built with Kotlin Multiplatform and Compose Multiplatform, targeting both Android and iOS.
+A classic memory matching game featuring fantasy creatures called "Astors" with original background music. Built with Kotlin Multiplatform and Compose Multiplatform, targeting both Android and iOS.
 
 ## How to Play
 
