@@ -1,16 +1,17 @@
 package io.lb.astormemory.highscore
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.lb.astormemory.game.domain.usecase.MemoryGameUseCases
 import io.lb.astormemory.shared.flow.Resource
 import io.lb.astormemory.shared.model.Score
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -79,14 +80,14 @@ internal class ScoreViewModel(
                     delay(DEBOUNCE_DELAY)
                     _state.update {
                         it.copy(
-                            scores = scores,
+                            scores = scores.toList(),
                             isLoading = false,
                             message = null
                         )
                     }
                 }
             }
-        }.launchIn(CoroutineScope(Dispatchers.IO))
+        }.flowOn(Dispatchers.IO).launchIn(viewModelScope)
     }
 
     private fun getScores() {
@@ -141,6 +142,6 @@ internal class ScoreViewModel(
                     }
                 }
             }
-        }.launchIn(CoroutineScope(Dispatchers.IO))
+        }.flowOn(Dispatchers.IO).launchIn(viewModelScope)
     }
 }
