@@ -60,8 +60,7 @@ This project demonstrates modern **Kotlin Multiplatform (KMP)** development with
 ## Download
 
 [![Get it on Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=io.lb.astormemory.app)
-
-*iOS version coming soon to the App Store*
+[![Download on the App Store](https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg)](https://apps.apple.com/br/app/astormemory/id6758786308)
 
 ## Credits
 
