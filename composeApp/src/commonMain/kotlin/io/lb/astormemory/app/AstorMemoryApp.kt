@@ -2,23 +2,19 @@ package io.lb.astormemory.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import io.lb.astormemory.app.routes.GameOverRoute
 import io.lb.astormemory.app.routes.GameRoute
 import io.lb.astormemory.app.routes.HighScoresRoute
+import io.lb.astormemory.app.routes.MenuRoute
 import io.lb.astormemory.app.routes.SettingsRoute
 import io.lb.astormemory.game.ds.effects.AstorMemoryTransitions
-import io.lb.astormemory.game.platform.audio.AudioPlayer
+import io.lb.astormemory.game.domain.repository.SFXAndMusicRepository
 import io.lb.astormemory.game.platform.preferences.AppPreferences
-import io.lb.astormemory.menu.MenuScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import io.lb.astormemory.game.ds.theme.AstorMemoryChallengeTheme
-import io.lb.astormemory.game.platform.utils.MusicManager
-import io.lb.astormemory.game.platform.utils.PreferencesKeys
 import io.lb.astormemory.navigation.AstorMemoryRoutes
 import org.jetbrains.compose.resources.InternalResourceApi
 import org.koin.compose.koinInject
@@ -29,14 +25,12 @@ import org.koin.compose.koinInject
 fun AstorMemoryApp(onQuitApp: () -> Unit) {
     val navController = rememberNavController()
     val prefs: AppPreferences = koinInject()
-    val audioPlayer: AudioPlayer = koinInject()
-    val musicManager: MusicManager = koinInject()
+    val sfxAndMusicRepository: SFXAndMusicRepository = koinInject()
     val appState = rememberAppState(prefs)
 
     DisposableEffect(Unit) {
         onDispose {
-            audioPlayer.release()
-            musicManager.release()
+            sfxAndMusicRepository.release()
         }
     }
 
@@ -50,35 +44,7 @@ fun AstorMemoryApp(onQuitApp: () -> Unit) {
             popExitTransition = { AstorMemoryTransitions.defaultPopExitTransition }
         ) {
             composable<AstorMemoryRoutes.Menu> {
-                LaunchedEffect(appState.isMuted) {
-                    if (!appState.isMuted) {
-                        musicManager.play(MusicManager.MusicTrack.TITLE_SCREEN)
-                    } else {
-                        musicManager.pauseAll()
-                    }
-                }
-
-                MenuScreen(
-                    navController = navController,
-                    isDarkMode = appState.isDarkMode,
-                    initialAmount = appState.initialAmount,
-                    isMuted = appState.isMuted,
-                    isSoundEffectsEnabled = appState.isSoundEffectsEnabled,
-                    onChangeMuted = {
-                        appState.isMuted = it
-                        prefs.putBoolean(PreferencesKeys.IS_MUTED, it)
-                        if (it) {
-                            musicManager.pauseAll()
-                        } else {
-                            musicManager.play(MusicManager.MusicTrack.TITLE_SCREEN)
-                        }
-                    },
-                    onClickQuit = onQuitApp,
-                    onChangeAmount = {
-                        appState.initialAmount = it
-                        prefs.putInt(PreferencesKeys.LAST_AMOUNT, it)
-                    }
-                )
+                MenuRoute(navController, appState, prefs, onQuitApp)
             }
 
             composable<AstorMemoryRoutes.Game>(
@@ -95,22 +61,6 @@ fun AstorMemoryApp(onQuitApp: () -> Unit) {
             composable<AstorMemoryRoutes.GameOver>(
                 enterTransition = { AstorMemoryTransitions.gameOverEnterTransition }
             ) { backStackEntry ->
-                val gameOver = backStackEntry.toRoute<AstorMemoryRoutes.GameOver>()
-
-                LaunchedEffect(appState.isMuted, gameOver.score, gameOver.amount) {
-                    if (!appState.isMuted) {
-                        val track = when {
-                            gameOver.score == 0 -> MusicManager.MusicTrack.LAVENDER
-                            gameOver.amount >= 20 -> MusicManager.MusicTrack.VICTORY_FINAL
-                            else -> MusicManager.MusicTrack.GAMEOVER
-                        }
-                        val volume = if (gameOver.score == 0) 0.95f else 1.0f
-                        musicManager.play(track, volume)
-                    } else {
-                        musicManager.pauseAll()
-                    }
-                }
-
                 GameOverRoute(backStackEntry, navController, appState.isDarkMode)
             }
 

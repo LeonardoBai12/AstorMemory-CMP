@@ -3,12 +3,12 @@ package io.lb.astormemory.app.routes
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import io.lb.astormemory.app.AppState
-import io.lb.astormemory.game.platform.audio.AudioPlayer
 import io.lb.astormemory.game.platform.preferences.AppPreferences
-import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
 import io.lb.astormemory.game.platform.utils.PreferencesKeys
+import io.lb.astormemory.settings.SettingsEvent
 import io.lb.astormemory.settings.SettingsScreen
-import org.koin.compose.koinInject
+import io.lb.astormemory.settings.SettingsViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingsRoute(
@@ -16,7 +16,7 @@ fun SettingsRoute(
     appState: AppState,
     prefs: AppPreferences
 ) {
-    val audioPlayer: AudioPlayer = koinInject()
+    val viewModel = koinViewModel<SettingsViewModel>()
 
     SettingsScreen(
         navController = navController,
@@ -26,25 +26,19 @@ fun SettingsRoute(
         isDynamicLayout = appState.isDynamicLayout,
         isSoundEffectsEnabled = appState.isSoundEffectsEnabled,
         onChangeDarkMode = {
-            if (appState.isSoundEffectsEnabled) {
-                AstorMemoryAudio.playFlipEffect(appState.isMuted, audioPlayer)
-            }
+            viewModel.onEvent(SettingsEvent.OnOptionChanged)
             appState.isDarkMode = it
             prefs.putBoolean(PreferencesKeys.IS_DARK_MODE, it)
         },
         onChangeDynamicLayout = {
-            if (appState.isSoundEffectsEnabled) {
-                AstorMemoryAudio.playFlipEffect(appState.isMuted, audioPlayer)
-            }
+            viewModel.onEvent(SettingsEvent.OnOptionChanged)
             appState.isDynamicLayout = it
             prefs.putBoolean(PreferencesKeys.IS_DYNAMIC_LAYOUT, it)
         },
         onChangeSoundEffectsEnabled = {
             appState.isSoundEffectsEnabled = it
-            if (appState.isSoundEffectsEnabled) {
-                AstorMemoryAudio.playFlipEffect(appState.isMuted, audioPlayer)
-            }
             prefs.putBoolean(PreferencesKeys.IS_SOUND_EFFECTS_ENABLED, it)
+            viewModel.onEvent(SettingsEvent.OnOptionChanged)
         },
         onChangeCardsPerLine = {
             appState.cardsPerLine = it

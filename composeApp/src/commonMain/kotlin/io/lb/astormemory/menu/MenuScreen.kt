@@ -51,14 +51,11 @@ import io.lb.astormemory.game.ds.components.MemoryGameWhiteButton
 import io.lb.astormemory.game.ds.components.Narcisus
 import io.lb.astormemory.game.ds.theme.AstorMemoryChallengeTheme
 import io.lb.astormemory.game.ds.theme.Dimens
-import io.lb.astormemory.game.platform.audio.AudioPlayer
-import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
 import io.lb.astormemory.navigation.AstorMemoryRoutes
 import io.lb.astormemory.theme.AstorMemoryDimens
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
 
 @Composable
 internal fun MenuScreen(
@@ -66,14 +63,13 @@ internal fun MenuScreen(
     isDarkMode: Boolean,
     initialAmount: Int,
     isMuted: Boolean,
-    isSoundEffectsEnabled: Boolean,
     onChangeMuted: (Boolean) -> Unit,
+    onButtonClicked: () -> Unit,
     onClickQuit: () -> Unit,
     onChangeAmount: (Int) -> Unit
 ) {
     var muted by remember { mutableStateOf(isMuted) }
     val amount = remember { mutableIntStateOf(initialAmount) }
-    val audioPlayer: AudioPlayer = koinInject()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -90,13 +86,10 @@ internal fun MenuScreen(
                 onChangeMuted = {
                     muted = it
                     onChangeMuted(it)
-                    if (isSoundEffectsEnabled) {
-                        AstorMemoryAudio.playClickEffect(muted, audioPlayer)
-                    }                },
+                    onButtonClicked()
+                },
                 onSettingsClick = {
-                    if (isSoundEffectsEnabled) {
-                        AstorMemoryAudio.playClickEffect(muted, audioPlayer)
-                    }
+                    onButtonClicked()
                     navController.navigate(AstorMemoryRoutes.Settings)
                 }
             )
@@ -259,8 +252,8 @@ internal fun MenuScreenPreview() {
             isDarkMode = false,
             initialAmount = 5,
             isMuted = false,
-            isSoundEffectsEnabled = true,
             onChangeMuted = { },
+            onButtonClicked = { },
             onClickQuit = { },
             onChangeAmount = { }
         )
@@ -276,8 +269,8 @@ internal fun MenuScreenDarkPreview() {
             isDarkMode = true,
             initialAmount = 10,
             isMuted = true,
-            isSoundEffectsEnabled = true,
             onChangeMuted = { },
+            onButtonClicked = { },
             onClickQuit = { },
             onChangeAmount = { }
         )
