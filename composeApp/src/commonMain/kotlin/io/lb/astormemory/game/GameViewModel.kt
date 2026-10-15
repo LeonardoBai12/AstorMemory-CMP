@@ -5,10 +5,6 @@ import androidx.lifecycle.viewModelScope
 import io.lb.astormemory.game.domain.repository.SFXAndMusicRepository
 import io.lb.astormemory.game.domain.usecase.MemoryGameUseCases
 import io.lb.astormemory.game.ds.model.GameCard
-import io.lb.astormemory.game.platform.audio.AudioPlayer
-import io.lb.astormemory.game.platform.preferences.AppPreferences
-import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
-import io.lb.astormemory.game.platform.utils.PreferencesKeys
 import io.lb.astormemory.shared.flow.Resource
 import io.lb.astormemory.shared.model.AstorCard
 import io.lb.astormemory.game.GameEvent
@@ -31,8 +27,6 @@ import kotlinx.coroutines.launch
 internal class GameViewModel(
     private val useCases: MemoryGameUseCases,
     private val sfxAndMusicRepository: SFXAndMusicRepository,
-    private val audioPlayer: AudioPlayer,
-    private val prefs: AppPreferences,
     private val amount: Int
 ) : ViewModel() {
 
@@ -66,6 +60,7 @@ internal class GameViewModel(
     fun onEvent(event: GameEvent) {
         when (event) {
             is GameEvent.CardFlipped -> {
+                sfxAndMusicRepository.playCardFlippedSoundEffect()
                 viewModelScope.launch {
                     _state.update {
                         it.copy(
@@ -81,6 +76,10 @@ internal class GameViewModel(
                 }
             }
             is GameEvent.CardMatched -> {
+                sfxAndMusicRepository.playMatchCardSoundEffect(
+                    matches = _state.value.cards.count { it.isMatched },
+                    totalAmount = amount
+                )
                 onMatched(event)
             }
             GameEvent.CardMismatched -> {
@@ -126,6 +125,7 @@ internal class GameViewModel(
     }
 
     private fun onGameRestarted() {
+        sfxAndMusicRepository.stopShuffleSoundEffect()
         viewModelScope.launch {
             playShuffleEffect()
             mismatches = 0
@@ -238,15 +238,15 @@ internal class GameViewModel(
     private fun playShuffleEffect() {
         viewModelScope.launch {
             delay(300L)
-            val isMuted = prefs.getBoolean(PreferencesKeys.IS_MUTED, false)
-            val isSoundEnabled = prefs.getBoolean(PreferencesKeys.IS_SOUND_EFFECTS_ENABLED, true)
-
-            if (isSoundEnabled) {
-                AstorMemoryAudio.playShuffleEffect(isMuted, audioPlayer)
-                delay(amount * 200L)
-                AstorMemoryAudio.stopShuffleEffect(audioPlayer)
-            }
+            sfxAndMusicRepository.playShuffleSoundEffect()
+            delay(amount * 200L)
+            sfxAndMusicRepository.stopShuffleSoundEffect()
         }
+    }
+
+    override fun onCleared() {
+        sfxAndMusicRepository.stopShuffleSoundEffect()
+        super.onCleared()
     }
 
     companion object {

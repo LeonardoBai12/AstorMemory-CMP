@@ -53,8 +53,6 @@ import io.lb.astormemory.game.ds.components.MemoryGameRedButton
 import io.lb.astormemory.game.ds.components.MemoryGameRestartButton
 import io.lb.astormemory.game.ds.components.MemoryGameStopButton
 import io.lb.astormemory.game.ds.theme.Dimens
-import io.lb.astormemory.game.platform.audio.AudioPlayer
-import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
 import io.lb.astormemory.navigation.AstorMemoryRoutes
 import io.lb.astormemory.game.GameEvent
 import io.lb.astormemory.game.GameState
@@ -65,7 +63,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 
 private const val CLICK_LOCK_DELAY = 100L
 
@@ -78,9 +75,7 @@ internal fun GameScreen(
     onEvent: (GameEvent) -> Unit,
     isDarkMode: Boolean,
     cardsPerLine: Int,
-    cardsPerColumn: Int,
-    onCardFlipped: () -> Unit,
-    onCardMatched: (Int) -> Unit
+    cardsPerColumn: Int
 ) {
     val lastSelectedCard = remember { mutableStateOf("") }
     var restartTrigger by remember { mutableIntStateOf(0) }
@@ -141,10 +136,6 @@ internal fun GameScreen(
                     lastSelectedCard = lastSelectedCard,
                     cardsPerLine = cardsPerLine,
                     cardsPerColumn = cardsPerColumn,
-                    onCardFlipped = onCardFlipped,
-                    onCardMatched = {
-                        onCardMatched(state.cards.count { it.isMatched })
-                    },
                     restartTrigger = restartTrigger
                 )
             }
@@ -162,7 +153,6 @@ private fun GameTopBar(
     isDarkMode: Boolean,
     onRestart: () -> Unit
 ) {
-    val audioPlayer: AudioPlayer = koinInject()
     TopAppBar(
         modifier = Modifier.padding(top = Dimens.smallerPadding),
         title = {
@@ -191,7 +181,6 @@ private fun GameTopBar(
                         .widthIn(max = 48.dp)
                 ) {
                     MemoryGameStopButton {
-                        AstorMemoryAudio.stopShuffleEffect(audioPlayer)
                         navController.navigate(AstorMemoryRoutes.Menu) {
                             popUpTo<AstorMemoryRoutes.Menu> {
                                 inclusive = true
@@ -208,7 +197,6 @@ private fun GameTopBar(
                             .widthIn(max = 48.dp)
                     ) {
                         MemoryGameRestartButton {
-                            AstorMemoryAudio.stopShuffleEffect(audioPlayer)
                             lastSelectedCard.value = ""
                             onEvent(GameEvent.GameRestarted)
                             onRestart()
@@ -286,8 +274,6 @@ private fun CardGrid(
     lastSelectedCard: MutableState<String>,
     cardsPerLine: Int,
     cardsPerColumn: Int,
-    onCardFlipped: () -> Unit,
-    onCardMatched: () -> Unit,
     restartTrigger: Int = 0
 ) {
     val clickLock = remember { mutableStateOf(false) }
@@ -337,10 +323,8 @@ private fun CardGrid(
                     cardsPerLine = cardsPerLine,
                     cardsPerColumn = cardsPerColumn,
                     clickLock = clickLock,
-                    onCardFlipped = onCardFlipped,
                     lastSelectedCard = lastSelectedCard,
-                    onEvent = onEvent,
-                    onCardMatched = onCardMatched
+                    onEvent = onEvent
                 )
             }
         }
@@ -356,10 +340,8 @@ private fun GameCard(
     cardsPerLine: Int,
     cardsPerColumn: Int,
     clickLock: MutableState<Boolean>,
-    onCardFlipped: () -> Unit,
     lastSelectedCard: MutableState<String>,
-    onEvent: (GameEvent) -> Unit,
-    onCardMatched: () -> Unit
+    onEvent: (GameEvent) -> Unit
 ) {
     MemoryGameCard(
         card = state.cards[index],
@@ -380,13 +362,11 @@ private fun GameCard(
             return@MemoryGameCard
         }
 
-        onCardFlipped()
         afterCardFlipped(
             lastSelectedCard = lastSelectedCard,
             state = state,
             index = index,
-            onEvent = onEvent,
-            onCardMatched = onCardMatched
+            onEvent = onEvent
         )
         resetClickLock(clickLock)
     }
@@ -396,8 +376,7 @@ private fun afterCardFlipped(
     lastSelectedCard: MutableState<String>,
     state: GameState,
     index: Int,
-    onEvent: (GameEvent) -> Unit,
-    onCardMatched: () -> Unit
+    onEvent: (GameEvent) -> Unit
 ) {
     when {
         lastSelectedCard.value.isEmpty() -> {
@@ -413,7 +392,6 @@ private fun afterCardFlipped(
             onEvent(GameEvent.CardFlipped(index))
             onEvent(GameEvent.CardMatched(id = state.cards[index].astorCard.astorId))
             lastSelectedCard.value = ""
-            onCardMatched()
         }
     }
 }

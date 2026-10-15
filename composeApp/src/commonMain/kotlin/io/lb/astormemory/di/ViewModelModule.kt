@@ -10,8 +10,6 @@ val viewModelModule = module {
         GameViewModel(
             useCases = get(),
             sfxAndMusicRepository = get(),
-            audioPlayer = get(),
-            prefs = get(),
             amount = params.get()
         )
     }

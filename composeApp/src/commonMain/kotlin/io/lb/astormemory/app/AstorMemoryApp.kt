@@ -85,7 +85,7 @@ fun AstorMemoryApp(onQuitApp: () -> Unit) {
                 enterTransition = { AstorMemoryTransitions.gameEnterTransition },
                 exitTransition = { AstorMemoryTransitions.gameExitTransition }
             ) { backStackEntry ->
-                GameRoute(backStackEntry, navController, appState, audioPlayer)
+                GameRoute(backStackEntry, navController, appState)
             }
 
             composable<AstorMemoryRoutes.HighScores> {
