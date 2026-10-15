@@ -11,6 +11,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(projects.common.commonShared)
+            api(libs.androidx.datastore.preferences)
         }
         androidMain.dependencies {
             implementation(libs.koin.android)

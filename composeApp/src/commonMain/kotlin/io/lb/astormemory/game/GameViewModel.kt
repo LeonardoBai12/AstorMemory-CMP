@@ -60,7 +60,9 @@ internal class GameViewModel(
     fun onEvent(event: GameEvent) {
         when (event) {
             is GameEvent.CardFlipped -> {
-                sfxAndMusicRepository.playCardFlippedSoundEffect()
+                viewModelScope.launch {
+                    sfxAndMusicRepository.playCardFlippedSoundEffect()
+                }
                 viewModelScope.launch {
                     _state.update {
                         it.copy(
@@ -76,10 +78,10 @@ internal class GameViewModel(
                 }
             }
             is GameEvent.CardMatched -> {
-                sfxAndMusicRepository.playMatchCardSoundEffect(
-                    matches = _state.value.cards.count { it.isMatched },
-                    totalAmount = amount
-                )
+                val matches = _state.value.cards.count { it.isMatched }
+                viewModelScope.launch {
+                    sfxAndMusicRepository.playMatchCardSoundEffect(matches, totalAmount = amount)
+                }
                 onMatched(event)
             }
             GameEvent.CardMismatched -> {
@@ -113,13 +115,17 @@ internal class GameViewModel(
                 onGameRestarted()
             }
             GameEvent.GameStarted -> {
-                sfxAndMusicRepository.playGameSong(amount)
+                viewModelScope.launch {
+                    sfxAndMusicRepository.playGameSong(amount)
+                }
             }
             GameEvent.SongsPaused -> {
                 sfxAndMusicRepository.pauseSongs()
             }
             GameEvent.SongResumed -> {
-                sfxAndMusicRepository.resumeSong()
+                viewModelScope.launch {
+                    sfxAndMusicRepository.resumeSong()
+                }
             }
         }
     }

@@ -18,6 +18,7 @@ serialization-json = "1.9.0"
 koin = "4.1.1"
 kotlin-datetime = "0.7.1"
 sqldelight = "2.2.1"
+datastore = "1.2.1"
 firebaseBom = "34.7.0"
 integrity = "1.6.0"
 
@@ -100,6 +101,9 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+
+# AndroidX - DataStore
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

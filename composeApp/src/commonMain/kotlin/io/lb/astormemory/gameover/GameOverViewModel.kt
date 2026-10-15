@@ -1,7 +1,9 @@
 package io.lb.astormemory.gameover
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.lb.astormemory.game.domain.repository.SFXAndMusicRepository
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the game over screen.
@@ -18,7 +20,7 @@ internal class GameOverViewModel(
 
     fun onEvent(event: GameOverEvent) {
         when (event) {
-            GameOverEvent.OnStart -> {
+            GameOverEvent.OnStart -> viewModelScope.launch {
                 sfxAndMusicRepository.playGameOverSong(score, amount)
             }
         }

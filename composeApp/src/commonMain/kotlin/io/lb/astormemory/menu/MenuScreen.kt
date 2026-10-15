@@ -86,7 +86,6 @@ internal fun MenuScreen(
                 onChangeMuted = {
                     muted = it
                     onChangeMuted(it)
-                    onButtonClicked()
                 },
                 onSettingsClick = {
                     onButtonClicked()

@@ -15,19 +15,19 @@ class SFXAndMusicRepositoryImpl(
     private val songsProvider: AstorMemorySongsProvider,
 ) : SFXAndMusicRepository {
 
-    override fun playButtonClickedSoundEffect() {
+    override suspend fun playButtonClickedSoundEffect() {
         sfxProvider.playButtonClickedSoundEffect()
     }
 
-    override fun playOptionSelectedSoundEffect() {
+    override suspend fun playOptionSelectedSoundEffect() {
         sfxProvider.playOptionSelectedSoundEffect()
     }
 
-    override fun playCardFlippedSoundEffect() {
+    override suspend fun playCardFlippedSoundEffect() {
         sfxProvider.playCardFlippedSoundEffect()
     }
 
-    override fun playShuffleSoundEffect() {
+    override suspend fun playShuffleSoundEffect() {
         sfxProvider.playShuffleSoundEffect()
     }
 
@@ -35,23 +35,23 @@ class SFXAndMusicRepositoryImpl(
         sfxProvider.stopShuffleSoundEffect()
     }
 
-    override fun playMatchCardSoundEffect(matches: Int, totalAmount: Int) {
+    override suspend fun playMatchCardSoundEffect(matches: Int, totalAmount: Int) {
         sfxProvider.playMatchCardSoundEffect(matches, totalAmount)
     }
 
-    override fun playMenuSong() {
+    override suspend fun playMenuSong() {
         songsProvider.playMenuSong()
     }
 
-    override fun playHighScoreSong() {
+    override suspend fun playHighScoreSong() {
         songsProvider.playHighScoreSong()
     }
 
-    override fun playGameSong(amount: Int) {
+    override suspend fun playGameSong(amount: Int) {
         songsProvider.playGameSong(amount)
     }
 
-    override fun playGameOverSong(score: Int, amount: Int) {
+    override suspend fun playGameOverSong(score: Int, amount: Int) {
         songsProvider.playGameOverSong(score, amount)
     }
 
@@ -59,7 +59,7 @@ class SFXAndMusicRepositoryImpl(
         songsProvider.pauseSongs()
     }
 
-    override fun resumeSong() {
+    override suspend fun resumeSong() {
         songsProvider.resumeSong()
     }
 

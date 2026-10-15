@@ -8,9 +8,11 @@ import io.lb.astormemory.game.domain.repository.SFXAndMusicRepository
 import io.lb.astormemory.game.domain.repository.SettingsRepository
 import io.lb.astormemory.shared.model.AppSettings
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
@@ -20,6 +22,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @UsesMocks(SettingsRepository::class, SFXAndMusicRepository::class)
@@ -70,14 +73,24 @@ internal class AppViewModelTest {
     }
 
     @Test
+    fun `When the settings are not loaded yet expect no state`() {
+        mocker.reset()
+        mocker.every { settingsRepository.settings } returns MutableSharedFlow()
+
+        val viewModel = AppViewModel(settingsRepository, sfxAndMusicRepository, isSystemInDarkMode = false)
+
+        assertNull(viewModel.state.value)
+    }
+
+    @Test
     fun `When dark mode was never chosen expect the system theme to be used`() {
         settings.value = AppSettings(isDarkMode = null)
 
         val darkSystem = AppViewModel(settingsRepository, sfxAndMusicRepository, isSystemInDarkMode = true)
         val lightSystem = AppViewModel(settingsRepository, sfxAndMusicRepository, isSystemInDarkMode = false)
 
-        assertTrue(darkSystem.state.value.isDarkMode)
-        assertFalse(lightSystem.state.value.isDarkMode)
+        assertTrue(darkSystem.state.value!!.isDarkMode)
+        assertFalse(lightSystem.state.value!!.isDarkMode)
     }
 
     @Test
@@ -86,7 +99,7 @@ internal class AppViewModelTest {
 
         val viewModel = AppViewModel(settingsRepository, sfxAndMusicRepository, isSystemInDarkMode = true)
 
-        assertFalse(viewModel.state.value.isDarkMode)
+        assertFalse(viewModel.state.value!!.isDarkMode)
     }
 
     @Test
@@ -95,8 +108,8 @@ internal class AppViewModelTest {
 
         settings.value = settings.value.copy(isMuted = true, lastAmount = 20)
 
-        assertTrue(viewModel.state.value.isMuted)
-        assertEquals(20, viewModel.state.value.initialAmount)
+        assertTrue(viewModel.state.value!!.isMuted)
+        assertEquals(20, viewModel.state.value!!.initialAmount)
     }
 
     @Test
@@ -118,22 +131,22 @@ internal class AppViewModelTest {
     }
 
     @Test
-    fun `When OnButtonClicked expect click sound effect to be played`() {
-        mocker.every { sfxAndMusicRepository.playButtonClickedSoundEffect() } returns Unit
+    fun `When OnButtonClicked expect click sound effect to be played`() = runTest {
+        mocker.everySuspending { sfxAndMusicRepository.playButtonClickedSoundEffect() } returns Unit
         val viewModel = AppViewModel(settingsRepository, sfxAndMusicRepository, isSystemInDarkMode = false)
 
         viewModel.onEvent(AppEvent.OnButtonClicked)
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.playButtonClickedSoundEffect() }
+        mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.playButtonClickedSoundEffect() }
     }
 
     @Test
-    fun `When OnOptionSelected expect option selected sound effect to be played`() {
-        mocker.every { sfxAndMusicRepository.playOptionSelectedSoundEffect() } returns Unit
+    fun `When OnOptionSelected expect option selected sound effect to be played`() = runTest {
+        mocker.everySuspending { sfxAndMusicRepository.playOptionSelectedSoundEffect() } returns Unit
         val viewModel = AppViewModel(settingsRepository, sfxAndMusicRepository, isSystemInDarkMode = false)
 
         viewModel.onEvent(AppEvent.OnOptionSelected)
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.playOptionSelectedSoundEffect() }
+        mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.playOptionSelectedSoundEffect() }
     }
 }

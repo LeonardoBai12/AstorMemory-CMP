@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 private const val DEBOUNCE_DELAY = 300L
 private const val AMOUNT_TAKEN = 10
@@ -50,13 +51,13 @@ internal class ScoreViewModel(
                     getScores()
                 }
             }
-            ScoresEvent.OnPlaySong -> {
+            ScoresEvent.OnPlaySong -> viewModelScope.launch {
                 sfxAndMusicRepository.playHighScoreSong()
             }
             ScoresEvent.OnPauseSongs -> {
                 sfxAndMusicRepository.pauseSongs()
             }
-            ScoresEvent.OnResumeSong -> {
+            ScoresEvent.OnResumeSong -> viewModelScope.launch {
                 sfxAndMusicRepository.resumeSong()
             }
         }

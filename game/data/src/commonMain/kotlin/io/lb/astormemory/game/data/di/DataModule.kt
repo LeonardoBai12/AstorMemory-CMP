@@ -1,6 +1,7 @@
 package io.lb.astormemory.game.data.di
 
 import io.lb.astormemory.game.data.datasource.MemoryGameDataSource
+import io.lb.astormemory.game.data.datasource.SettingsDataSource
 import io.lb.astormemory.game.data.repository.SFXAndMusicRepositoryImpl
 import io.lb.astormemory.game.data.repository.SettingsRepositoryImpl
 import io.lb.astormemory.game.data.repository.MemoryGameRepositoryImpl
@@ -15,6 +16,7 @@ import org.koin.dsl.module
 val dataModule = module {
     single { AstorResourceProvider() }
     single<MemoryGameDataSource> { MemoryGameDataSource(get()) }
+    single { SettingsDataSource(get()) }
     single<MemoryGameRepository> { MemoryGameRepositoryImpl(get(), get()) }
     single { AstorMemorySFXProvider(get(), get()) }
     single { AstorMemorySongsProvider(get(), get()) }

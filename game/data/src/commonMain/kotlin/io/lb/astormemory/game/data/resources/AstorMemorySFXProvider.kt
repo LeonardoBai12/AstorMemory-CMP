@@ -1,39 +1,32 @@
 package io.lb.astormemory.game.data.resources
 
+import io.lb.astormemory.game.data.datasource.SettingsDataSource
 import io.lb.astormemory.game.platform.audio.AudioPlayer
-import io.lb.astormemory.game.platform.preferences.AppPreferences
 import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
-import io.lb.astormemory.game.platform.utils.PreferencesKeys
 
 /**
  * Provider to play the sound effects of the game, respecting the user's audio settings.
  *
  * @property audioPlayer The player used to play the sound effects.
- * @property preferences The preferences used to read the user's audio settings.
+ * @property settingsDataSource The data source used to read the user's audio settings.
  */
 class AstorMemorySFXProvider(
     private val audioPlayer: AudioPlayer,
-    private val preferences: AppPreferences,
+    private val settingsDataSource: SettingsDataSource,
 ) {
-    private val isMuted: Boolean
-        get() = preferences.getBoolean(PreferencesKeys.IS_MUTED, false)
-
-    private val isSoundEffectsEnabled: Boolean
-        get() = preferences.getBoolean(PreferencesKeys.IS_SOUND_EFFECTS_ENABLED, true)
-
-    fun playButtonClickedSoundEffect() = playIfEnabled {
+    suspend fun playButtonClickedSoundEffect() = playIfEnabled { isMuted ->
         AstorMemoryAudio.playClickEffect(isMuted, audioPlayer)
     }
 
-    fun playOptionSelectedSoundEffect() = playIfEnabled {
+    suspend fun playOptionSelectedSoundEffect() = playIfEnabled { isMuted ->
         AstorMemoryAudio.playOptionSelectEffect(isMuted, audioPlayer)
     }
 
-    fun playCardFlippedSoundEffect() = playIfEnabled {
+    suspend fun playCardFlippedSoundEffect() = playIfEnabled { isMuted ->
         AstorMemoryAudio.playFlipEffect(isMuted, audioPlayer)
     }
 
-    fun playShuffleSoundEffect() = playIfEnabled {
+    suspend fun playShuffleSoundEffect() = playIfEnabled { isMuted ->
         AstorMemoryAudio.playShuffleEffect(isMuted, audioPlayer)
     }
 
@@ -41,7 +34,7 @@ class AstorMemorySFXProvider(
         AstorMemoryAudio.stopShuffleEffect(audioPlayer)
     }
 
-    fun playMatchCardSoundEffect(matches: Int, totalAmount: Int) = playIfEnabled {
+    suspend fun playMatchCardSoundEffect(matches: Int, totalAmount: Int) = playIfEnabled { isMuted ->
         AstorMemoryAudio.playMatchEffect(matches, totalAmount, isMuted, audioPlayer)
     }
 
@@ -49,7 +42,8 @@ class AstorMemorySFXProvider(
         audioPlayer.release()
     }
 
-    private inline fun playIfEnabled(play: () -> Unit) {
-        if (isSoundEffectsEnabled) play()
+    private suspend inline fun playIfEnabled(play: (isMuted: Boolean) -> Unit) {
+        val settings = settingsDataSource.getSettings()
+        if (settings.isSoundEffectsEnabled) play(settings.isMuted)
     }
 }

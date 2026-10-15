@@ -1,10 +1,11 @@
 package io.lb.astormemory.game.platform.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import io.lb.astormemory.game.platform.audio.AudioPlayer
 import io.lb.astormemory.game.platform.audio.AudioPlayerFactory
 import io.lb.astormemory.game.platform.music.MusicPlayerFactory
-import io.lb.astormemory.game.platform.preferences.AppPreferences
-import io.lb.astormemory.game.platform.preferences.PreferencesFactory
+import io.lb.astormemory.game.platform.preferences.SettingsDataStoreFactory
 import io.lb.astormemory.game.platform.utils.MusicManager
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -12,8 +13,8 @@ import org.koin.dsl.module
 expect val platformModule: Module
 
 val commonModule = module {
-    single<AppPreferences> {
-        get<PreferencesFactory>().create()
+    single<DataStore<Preferences>> {
+        get<SettingsDataStoreFactory>().create()
     }
     single<AudioPlayer> {
         get<AudioPlayerFactory>().create()

@@ -15,7 +15,7 @@ sealed interface MenuEvent {
     data object OnButtonClicked : MenuEvent
 
     /**
-     * Represents the songs being muted or unmuted.
+     * Represents the songs being muted or unmuted, playing the click sound with the new setting.
      *
      * @property isMuted whether the songs are muted.
      */

@@ -1,9 +1,11 @@
 package io.lb.astormemory.game.data.resources
 
+import io.lb.astormemory.game.data.datasource.SettingsDataSource
+import io.lb.astormemory.game.data.fake.FakePreferencesDataStore
 import io.lb.astormemory.game.platform.music.MusicPlayer
-import io.lb.astormemory.game.platform.preferences.AppPreferences
 import io.lb.astormemory.game.platform.utils.MusicManager
 import io.lb.astormemory.game.platform.utils.PreferencesKeys
+import kotlinx.coroutines.test.runTest
 import org.kodein.mock.Mocker
 import org.kodein.mock.UsesMocks
 import org.kodein.mock.generated.mock
@@ -15,22 +17,19 @@ import kotlin.test.assertTrue
 
 // MusicManager is a concrete class and cannot be mocked by MockMP (which only mocks interfaces).
 // MusicPlayer (interface) is mocked instead, and a real MusicManager is constructed around it,
-// recording which song files were requested.
-@UsesMocks(MusicPlayer::class, AppPreferences::class)
+// recording which song files were requested. The settings come from an in-memory DataStore.
+@UsesMocks(MusicPlayer::class)
 class AstorMemorySongsProviderTest {
     val mocker = Mocker()
     val musicPlayer: MusicPlayer = mocker.mock()
-    val prefs: AppPreferences = mocker.mock()
     val requestedFiles = mutableListOf<String>()
-    var isMuted = false
+    lateinit var dataStore: FakePreferencesDataStore
     lateinit var provider: AstorMemorySongsProvider
 
     @BeforeTest
     fun setUp() {
         mocker.reset()
         requestedFiles.clear()
-        isMuted = false
-        mocker.every { prefs.getBoolean(PreferencesKeys.IS_MUTED, false) } runs { isMuted }
         mocker.every { musicPlayer.play(isAny()) } returns Unit
         mocker.every { musicPlayer.pause() } returns Unit
         mocker.every { musicPlayer.resume() } returns Unit
@@ -39,14 +38,15 @@ class AstorMemorySongsProviderTest {
             requestedFiles.add(fileName)
             musicPlayer
         }
-        provider = AstorMemorySongsProvider(musicManager, prefs)
+        dataStore = FakePreferencesDataStore()
+        provider = AstorMemorySongsProvider(musicManager, SettingsDataSource(dataStore))
     }
 
     @AfterTest
     fun tearDown() = mocker.reset()
 
     @Test
-    fun `When play menu song expect title screen song to be played`() {
+    fun `When play menu song expect title screen song to be played`() = runTest {
 
         provider.playMenuSong()
 
@@ -55,7 +55,7 @@ class AstorMemorySongsProviderTest {
     }
 
     @Test
-    fun `When play high score song expect high scores song to be played`() {
+    fun `When play high score song expect high scores song to be played`() = runTest {
 
         provider.playHighScoreSong()
 
@@ -64,7 +64,7 @@ class AstorMemorySongsProviderTest {
     }
 
     @Test
-    fun `When play game song expect song according to the amount of cards`() {
+    fun `When play game song expect song according to the amount of cards`() = runTest {
         val expectedSongs = mapOf(
             1 to ("victory_road.mp3" to 1.0f),
             5 to ("wild.mp3" to 1.0f),
@@ -85,7 +85,7 @@ class AstorMemorySongsProviderTest {
     }
 
     @Test
-    fun `When play game over song with no score expect lavender song to be played`() {
+    fun `When play game over song with no score expect lavender song to be played`() = runTest {
 
         provider.playGameOverSong(score = 0, amount = 20)
 
@@ -94,7 +94,7 @@ class AstorMemorySongsProviderTest {
     }
 
     @Test
-    fun `When play game over song after a hard game expect victory final song to be played`() {
+    fun `When play game over song after a hard game expect victory final song to be played`() = runTest {
 
         provider.playGameOverSong(score = 1000, amount = 20)
 
@@ -103,7 +103,7 @@ class AstorMemorySongsProviderTest {
     }
 
     @Test
-    fun `When play game over song expect game over song to be played`() {
+    fun `When play game over song expect game over song to be played`() = runTest {
 
         provider.playGameOverSong(score = 1000, amount = 10)
 
@@ -112,8 +112,8 @@ class AstorMemorySongsProviderTest {
     }
 
     @Test
-    fun `When muted expect no song to be played`() {
-        isMuted = true
+    fun `When muted expect no song to be played`() = runTest {
+        dataStore[PreferencesKeys.IS_MUTED] = true
 
         provider.playMenuSong()
         provider.playHighScoreSong()
@@ -124,22 +124,20 @@ class AstorMemorySongsProviderTest {
     }
 
     @Test
-    fun `When muted after a song was played expect the song to be paused`() {
+    fun `When muted after a song was played expect the song to be paused`() = runTest {
         provider.playMenuSong()
 
-        isMuted = true
+        dataStore[PreferencesKeys.IS_MUTED] = true
         provider.playMenuSong()
 
         mocker.verify {
-            prefs.getBoolean(PreferencesKeys.IS_MUTED, false)
             musicPlayer.play(0.7f)
-            prefs.getBoolean(PreferencesKeys.IS_MUTED, false)
             musicPlayer.pause()
         }
     }
 
     @Test
-    fun `When pause songs expect the song to be paused`() {
+    fun `When pause songs expect the song to be paused`() = runTest {
         provider.playMenuSong()
 
         provider.pauseSongs()
@@ -148,7 +146,7 @@ class AstorMemorySongsProviderTest {
     }
 
     @Test
-    fun `When resume song expect the last song to be resumed`() {
+    fun `When resume song expect the last song to be resumed`() = runTest {
         provider.playMenuSong()
 
         provider.resumeSong()
@@ -157,21 +155,17 @@ class AstorMemorySongsProviderTest {
     }
 
     @Test
-    fun `When resume song while muted expect the last song not to be resumed`() {
+    fun `When resume song while muted expect the last song not to be resumed`() = runTest {
         provider.playMenuSong()
 
-        isMuted = true
+        dataStore[PreferencesKeys.IS_MUTED] = true
         provider.resumeSong()
 
-        mocker.verify {
-            prefs.getBoolean(PreferencesKeys.IS_MUTED, false)
-            musicPlayer.play(0.7f)
-            prefs.getBoolean(PreferencesKeys.IS_MUTED, false)
-        }
+        mocker.verify { musicPlayer.play(0.7f) }
     }
 
     @Test
-    fun `When released expect the songs to be released`() {
+    fun `When released expect the songs to be released`() = runTest {
         provider.playMenuSong()
 
         provider.release()

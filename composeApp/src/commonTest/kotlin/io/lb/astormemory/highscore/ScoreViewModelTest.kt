@@ -169,12 +169,13 @@ internal class ScoreViewModelTest {
     @Test
     fun `When OnPlaySong, expect high score song to be played`() = runTest {
         mocker.everySuspending { repository.getScores() } returns scores()
-        mocker.every { sfxAndMusicRepository.playHighScoreSong() } returns Unit
+        mocker.everySuspending { sfxAndMusicRepository.playHighScoreSong() } returns Unit
         viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
 
         viewModel.onEvent(ScoresEvent.OnPlaySong)
+        advanceUntilIdle()
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.playHighScoreSong() }
+        mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.playHighScoreSong() }
     }
 
     @Test
@@ -184,19 +185,21 @@ internal class ScoreViewModelTest {
         viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
 
         viewModel.onEvent(ScoresEvent.OnPauseSongs)
+        advanceUntilIdle()
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.pauseSongs() }
+        mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.pauseSongs() }
     }
 
     @Test
     fun `When OnResumeSong, expect last song to be resumed`() = runTest {
         mocker.everySuspending { repository.getScores() } returns scores()
-        mocker.every { sfxAndMusicRepository.resumeSong() } returns Unit
+        mocker.everySuspending { sfxAndMusicRepository.resumeSong() } returns Unit
         viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
 
         viewModel.onEvent(ScoresEvent.OnResumeSong)
+        advanceUntilIdle()
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.resumeSong() }
+        mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.resumeSong() }
     }
 
     private fun scores() = listOf(

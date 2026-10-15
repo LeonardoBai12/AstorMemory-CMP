@@ -1,8 +1,10 @@
 package io.lb.astormemory.settings
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.lb.astormemory.game.domain.repository.SFXAndMusicRepository
 import io.lb.astormemory.game.domain.repository.SettingsRepository
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the settings screen.
@@ -16,6 +18,12 @@ internal class SettingsViewModel(
 ) : ViewModel() {
 
     fun onEvent(event: SettingsEvent) {
+        viewModelScope.launch {
+            onSettingChanged(event)
+        }
+    }
+
+    private suspend fun onSettingChanged(event: SettingsEvent) {
         when (event) {
             is SettingsEvent.OnDarkModeChanged -> {
                 sfxAndMusicRepository.playCardFlippedSoundEffect()

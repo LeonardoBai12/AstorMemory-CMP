@@ -29,13 +29,16 @@ fun AstorMemoryApp(onQuitApp: () -> Unit) {
     val navController = rememberNavController()
     val isSystemInDarkMode = isSystemInDarkTheme()
     val appViewModel = koinViewModel<AppViewModel> { parametersOf(isSystemInDarkMode) }
-    val appState by appViewModel.state.collectAsState()
+    val loadedAppState by appViewModel.state.collectAsState()
     val buttonSoundPlayer = remember(appViewModel) {
         object : ButtonSoundPlayer {
             override fun playClick() = appViewModel.onEvent(AppEvent.OnButtonClicked)
             override fun playOptionSelected() = appViewModel.onEvent(AppEvent.OnOptionSelected)
         }
     }
+
+    // Nothing is drawn until the saved settings are loaded, so the theme doesn't flicker.
+    val appState = loadedAppState ?: return
 
     CompositionLocalProvider(LocalButtonSoundPlayer provides buttonSoundPlayer) {
         AstorMemoryChallengeTheme(darkTheme = appState.isDarkMode) {

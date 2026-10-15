@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the global state of the app.
@@ -24,20 +25,23 @@ internal class AppViewModel(
     private val isSystemInDarkMode: Boolean
 ) : ViewModel() {
 
-    val state: StateFlow<AppState> = settingsRepository.settings
+    /**
+     * The global state of the app, or null while the settings are still being loaded.
+     */
+    val state: StateFlow<AppState?> = settingsRepository.settings
         .map { it.toAppState() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = settingsRepository.settings.value.toAppState()
+            initialValue = null
         )
 
     fun onEvent(event: AppEvent) {
         when (event) {
-            AppEvent.OnButtonClicked -> {
+            AppEvent.OnButtonClicked -> viewModelScope.launch {
                 sfxAndMusicRepository.playButtonClickedSoundEffect()
             }
-            AppEvent.OnOptionSelected -> {
+            AppEvent.OnOptionSelected -> viewModelScope.launch {
                 sfxAndMusicRepository.playOptionSelectedSoundEffect()
             }
         }

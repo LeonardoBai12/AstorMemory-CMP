@@ -208,7 +208,7 @@ internal class GameViewModelTest {
     @Test
     fun `When the game is started, expect the game song to be played`() = runTest {
         mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
-        mocker.every { sfxAndMusicRepository.playGameSong(5) } returns Unit
+        mocker.everySuspending { sfxAndMusicRepository.playGameSong(5) } returns Unit
         stubAudio()
         viewModel = GameViewModel(useCases, sfxAndMusicRepository, 5)
 
@@ -216,8 +216,9 @@ internal class GameViewModelTest {
             awaitLoaded()
 
             viewModel.onEvent(GameEvent.GameStarted)
+            advanceUntilIdle()
 
-            mocker.verify(exhaustive = false) { sfxAndMusicRepository.playGameSong(5) }
+            mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.playGameSong(5) }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -234,8 +235,9 @@ internal class GameViewModelTest {
             awaitLoaded()
 
             viewModel.onEvent(GameEvent.SongsPaused)
+            advanceUntilIdle()
 
-            mocker.verify(exhaustive = false) { sfxAndMusicRepository.pauseSongs() }
+            mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.pauseSongs() }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -244,7 +246,7 @@ internal class GameViewModelTest {
     @Test
     fun `When song is resumed, expect the last song to be resumed`() = runTest {
         mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
-        mocker.every { sfxAndMusicRepository.resumeSong() } returns Unit
+        mocker.everySuspending { sfxAndMusicRepository.resumeSong() } returns Unit
         stubAudio()
         viewModel = GameViewModel(useCases, sfxAndMusicRepository, 5)
 
@@ -252,8 +254,9 @@ internal class GameViewModelTest {
             awaitLoaded()
 
             viewModel.onEvent(GameEvent.SongResumed)
+            advanceUntilIdle()
 
-            mocker.verify(exhaustive = false) { sfxAndMusicRepository.resumeSong() }
+            mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.resumeSong() }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -269,8 +272,9 @@ internal class GameViewModelTest {
             awaitLoaded()
 
             viewModel.onEvent(GameEvent.CardFlipped(0))
+            advanceUntilIdle()
 
-            mocker.verify(exhaustive = false) { sfxAndMusicRepository.playCardFlippedSoundEffect() }
+            mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.playCardFlippedSoundEffect() }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -286,8 +290,9 @@ internal class GameViewModelTest {
             awaitLoaded()
 
             viewModel.onEvent(GameEvent.CardMatched(id = 1))
+            advanceUntilIdle()
 
-            mocker.verify(exhaustive = false) {
+            mocker.verifyWithSuspend(exhaustive = false) {
                 sfxAndMusicRepository.playMatchCardSoundEffect(matches = 0, totalAmount = 5)
             }
 
@@ -305,17 +310,18 @@ internal class GameViewModelTest {
             awaitLoaded()
 
             viewModel.onEvent(GameEvent.GameRestarted)
+            advanceUntilIdle()
 
-            mocker.verify(exhaustive = false) { sfxAndMusicRepository.stopShuffleSoundEffect() }
+            mocker.verifyWithSuspend(exhaustive = false) { sfxAndMusicRepository.stopShuffleSoundEffect() }
 
             cancelAndIgnoreRemainingEvents()
         }
     }
 
-    private fun stubAudio() {
-        mocker.every { sfxAndMusicRepository.playCardFlippedSoundEffect() } returns Unit
-        mocker.every { sfxAndMusicRepository.playMatchCardSoundEffect(isAny(), isAny()) } returns Unit
-        mocker.every { sfxAndMusicRepository.playShuffleSoundEffect() } returns Unit
+    private suspend fun stubAudio() {
+        mocker.everySuspending { sfxAndMusicRepository.playCardFlippedSoundEffect() } returns Unit
+        mocker.everySuspending { sfxAndMusicRepository.playMatchCardSoundEffect(isAny(), isAny()) } returns Unit
+        mocker.everySuspending { sfxAndMusicRepository.playShuffleSoundEffect() } returns Unit
         mocker.every { sfxAndMusicRepository.stopShuffleSoundEffect() } returns Unit
     }
 

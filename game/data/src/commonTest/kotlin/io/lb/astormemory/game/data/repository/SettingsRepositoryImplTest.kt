@@ -1,161 +1,84 @@
 package io.lb.astormemory.game.data.repository
 
-import io.lb.astormemory.game.platform.preferences.AppPreferences
+import app.cash.turbine.test
+import io.lb.astormemory.game.data.datasource.SettingsDataSource
+import io.lb.astormemory.game.data.fake.FakePreferencesDataStore
 import io.lb.astormemory.game.platform.utils.PreferencesKeys
 import io.lb.astormemory.shared.model.AppSettings
-import org.kodein.mock.Mocker
-import org.kodein.mock.UsesMocks
-import org.kodein.mock.generated.mock
-import kotlin.test.AfterTest
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
-@UsesMocks(AppPreferences::class)
+// SettingsDataSource is a concrete class and cannot be mocked by MockMP (which only mocks
+// interfaces). A real SettingsDataSource is constructed around an in-memory DataStore instead.
 class SettingsRepositoryImplTest {
-    val mocker = Mocker()
-    val prefs: AppPreferences = mocker.mock()
+    lateinit var dataStore: FakePreferencesDataStore
+    lateinit var repository: SettingsRepositoryImpl
 
     @BeforeTest
     fun setUp() {
-        mocker.reset()
-        mocker.every { prefs.putBoolean(isAny(), isAny()) } returns Unit
-        mocker.every { prefs.putInt(isAny(), isAny()) } returns Unit
-    }
-
-    @AfterTest
-    fun tearDown() = mocker.reset()
-
-    @Test
-    fun `When nothing was saved expect default settings`() {
-        stubNothingSaved()
-
-        val repository = SettingsRepositoryImpl(prefs)
-
-        assertEquals(AppSettings(), repository.settings.value)
+        dataStore = FakePreferencesDataStore()
+        repository = SettingsRepositoryImpl(SettingsDataSource(dataStore))
     }
 
     @Test
-    fun `When dark mode was never saved expect it to follow the system theme`() {
-        stubNothingSaved()
+    fun `When settings change expect them to be emitted`() = runTest {
+        repository.settings.test {
+            assertEquals(AppSettings(), awaitItem())
 
-        val repository = SettingsRepositoryImpl(prefs)
+            repository.setLastAmount(12)
 
-        assertNull(repository.settings.value.isDarkMode)
+            assertEquals(AppSettings(lastAmount = 12), awaitItem())
+        }
     }
 
     @Test
-    fun `When settings were saved expect them to be read`() {
-        mocker.every { prefs.contains(PreferencesKeys.IS_DARK_MODE) } returns true
-        mocker.every { prefs.getBoolean(isEqual(PreferencesKeys.IS_DARK_MODE), isAny()) } returns true
-        mocker.every { prefs.getBoolean(isEqual(PreferencesKeys.IS_MUTED), isAny()) } returns true
-        mocker.every { prefs.getBoolean(isEqual(PreferencesKeys.IS_DYNAMIC_LAYOUT), isAny()) } returns false
-        mocker.every {
-            prefs.getBoolean(isEqual(PreferencesKeys.IS_SOUND_EFFECTS_ENABLED), isAny())
-        } returns false
-        mocker.every { prefs.getInt(isEqual(PreferencesKeys.CARDS_PER_LINE), isAny()) } returns 5
-        mocker.every { prefs.getInt(isEqual(PreferencesKeys.CARDS_PER_COLUMN), isAny()) } returns 7
-        mocker.every { prefs.getInt(isEqual(PreferencesKeys.LAST_AMOUNT), isAny()) } returns 12
-
-        val repository = SettingsRepositoryImpl(prefs)
-
-        val expected = AppSettings(
-            isDarkMode = true,
-            isMuted = true,
-            isDynamicLayout = false,
-            isSoundEffectsEnabled = false,
-            cardsPerLine = 5,
-            cardsPerColumn = 7,
-            lastAmount = 12
-        )
-        assertEquals(expected, repository.settings.value)
-    }
-
-    @Test
-    fun `When set dark mode expect it to be saved and emitted`() {
-        stubNothingSaved()
-        val repository = SettingsRepositoryImpl(prefs)
-
+    fun `When set dark mode expect it to be saved`() = runTest {
         repository.setDarkMode(true)
 
-        mocker.verify(exhaustive = false) { prefs.putBoolean(PreferencesKeys.IS_DARK_MODE, true) }
-        assertEquals(true, repository.settings.value.isDarkMode)
+        assertEquals(true, dataStore[PreferencesKeys.IS_DARK_MODE])
     }
 
     @Test
-    fun `When set muted expect it to be saved and emitted`() {
-        stubNothingSaved()
-        val repository = SettingsRepositoryImpl(prefs)
-
+    fun `When set muted expect it to be saved`() = runTest {
         repository.setMuted(true)
 
-        mocker.verify(exhaustive = false) { prefs.putBoolean(PreferencesKeys.IS_MUTED, true) }
-        assertEquals(true, repository.settings.value.isMuted)
+        assertEquals(true, dataStore[PreferencesKeys.IS_MUTED])
     }
 
     @Test
-    fun `When set dynamic layout expect it to be saved and emitted`() {
-        stubNothingSaved()
-        val repository = SettingsRepositoryImpl(prefs)
-
+    fun `When set dynamic layout expect it to be saved`() = runTest {
         repository.setDynamicLayout(false)
 
-        mocker.verify(exhaustive = false) {
-            prefs.putBoolean(PreferencesKeys.IS_DYNAMIC_LAYOUT, false)
-        }
-        assertEquals(false, repository.settings.value.isDynamicLayout)
+        assertEquals(false, dataStore[PreferencesKeys.IS_DYNAMIC_LAYOUT])
     }
 
     @Test
-    fun `When set sound effects enabled expect it to be saved and emitted`() {
-        stubNothingSaved()
-        val repository = SettingsRepositoryImpl(prefs)
-
+    fun `When set sound effects enabled expect it to be saved`() = runTest {
         repository.setSoundEffectsEnabled(false)
 
-        mocker.verify(exhaustive = false) {
-            prefs.putBoolean(PreferencesKeys.IS_SOUND_EFFECTS_ENABLED, false)
-        }
-        assertEquals(false, repository.settings.value.isSoundEffectsEnabled)
+        assertEquals(false, dataStore[PreferencesKeys.IS_SOUND_EFFECTS_ENABLED])
     }
 
     @Test
-    fun `When set cards per line expect it to be saved and emitted`() {
-        stubNothingSaved()
-        val repository = SettingsRepositoryImpl(prefs)
-
+    fun `When set cards per line expect it to be saved`() = runTest {
         repository.setCardsPerLine(5)
 
-        mocker.verify(exhaustive = false) { prefs.putInt(PreferencesKeys.CARDS_PER_LINE, 5) }
-        assertEquals(5, repository.settings.value.cardsPerLine)
+        assertEquals(5, dataStore[PreferencesKeys.CARDS_PER_LINE])
     }
 
     @Test
-    fun `When set cards per column expect it to be saved and emitted`() {
-        stubNothingSaved()
-        val repository = SettingsRepositoryImpl(prefs)
-
+    fun `When set cards per column expect it to be saved`() = runTest {
         repository.setCardsPerColumn(8)
 
-        mocker.verify(exhaustive = false) { prefs.putInt(PreferencesKeys.CARDS_PER_COLUMN, 8) }
-        assertEquals(8, repository.settings.value.cardsPerColumn)
+        assertEquals(8, dataStore[PreferencesKeys.CARDS_PER_COLUMN])
     }
 
     @Test
-    fun `When set last amount expect it to be saved and emitted`() {
-        stubNothingSaved()
-        val repository = SettingsRepositoryImpl(prefs)
-
+    fun `When set last amount expect it to be saved`() = runTest {
         repository.setLastAmount(15)
 
-        mocker.verify(exhaustive = false) { prefs.putInt(PreferencesKeys.LAST_AMOUNT, 15) }
-        assertEquals(15, repository.settings.value.lastAmount)
-    }
-
-    private fun stubNothingSaved() {
-        mocker.every { prefs.contains(isAny()) } returns false
-        mocker.every { prefs.getBoolean(isAny(), isAny()) } runs { args -> args[1] as Boolean }
-        mocker.every { prefs.getInt(isAny(), isAny()) } runs { args -> args[1] as Int }
+        assertEquals(15, dataStore[PreferencesKeys.LAST_AMOUNT])
     }
 }

@@ -41,9 +41,9 @@ There is no test suite currently — test directories exist but are empty.
 
 **Dependency Injection (Koin 4.1.1):** All modules wired in `composeApp/.../di/AppModules.kt`. Use cases are factories; repositories and preferences are singletons. Platform-specific bindings live in `platformModule` (expect/actual).
 
-**State management:** `GameViewModel` exposes `MutableStateFlow` for game state. Global app settings (dark mode, mute, layout, difficulty) live in `AppState` (`mutableStateOf`).
+**State management:** `GameViewModel` exposes `MutableStateFlow` for game state. Global app settings (dark mode, mute, layout, difficulty) are saved through `SettingsRepository` and exposed by `AppViewModel` as `StateFlow<AppState?>` (null until the settings load).
 
-**Platform abstraction:** `AppPreferences` (SharedPreferences / NSUserDefaults), `AudioPlayer`, and `MusicPlayer` are `expect` declarations in `platform` with platform-specific `actual` implementations.
+**Platform abstraction:** `SettingsDataStoreFactory`, `AudioPlayerFactory`, and `MusicPlayerFactory` are `expect` declarations in `platform` with platform-specific `actual` implementations. Settings are saved in a Preferences DataStore, which migrates the old SharedPreferences (Android) / NSUserDefaults (iOS) values on first read; always write settings through `SettingsRepository`.
 
 **Navigation:** Type-safe route objects (`Menu`, `Game`, `GameOver`, `HighScores`, `Settings`) in `AstorMemoryApp.kt`. Music track changes are triggered on route transitions.
 
