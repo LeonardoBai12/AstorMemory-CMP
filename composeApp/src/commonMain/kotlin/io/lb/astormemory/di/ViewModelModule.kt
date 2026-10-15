@@ -1,5 +1,6 @@
 package io.lb.astormemory.di
 
+import io.lb.astormemory.app.AppViewModel
 import io.lb.astormemory.game.GameViewModel
 import io.lb.astormemory.gameover.GameOverViewModel
 import io.lb.astormemory.highscore.ScoreViewModel
@@ -24,7 +25,8 @@ val viewModelModule = module {
     }
     viewModel {
         MenuViewModel(
-            sfxAndMusicRepository = get()
+            sfxAndMusicRepository = get(),
+            settingsRepository = get()
         )
     }
     viewModel { params ->
@@ -36,7 +38,15 @@ val viewModelModule = module {
     }
     viewModel {
         SettingsViewModel(
-            sfxAndMusicRepository = get()
+            sfxAndMusicRepository = get(),
+            settingsRepository = get()
+        )
+    }
+    viewModel { params ->
+        AppViewModel(
+            settingsRepository = get(),
+            sfxAndMusicRepository = get(),
+            isSystemInDarkMode = params.get()
         )
     }
 }

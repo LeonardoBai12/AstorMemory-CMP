@@ -1,6 +1,8 @@
 package io.lb.astormemory.game.platform.preferences
 
 interface AppPreferences {
+    fun contains(key: String): Boolean
+
     fun getString(key: String, defaultValue: String = ""): String
     fun putString(key: String, value: String)
 

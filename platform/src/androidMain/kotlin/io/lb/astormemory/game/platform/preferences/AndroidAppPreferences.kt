@@ -10,6 +10,10 @@ class AndroidAppPreferences(context: Context) : AppPreferences {
         Context.MODE_PRIVATE
     )
 
+    override fun contains(key: String): Boolean {
+        return prefs.contains(key)
+    }
+
     override fun getString(key: String, defaultValue: String): String {
         return prefs.getString(key, defaultValue) ?: defaultValue
     }

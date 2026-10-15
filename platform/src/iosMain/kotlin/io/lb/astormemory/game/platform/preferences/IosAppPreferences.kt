@@ -6,6 +6,10 @@ import platform.Foundation.NSUserDefaults
 class IosAppPreferences : AppPreferences {
     private val userDefaults = NSUserDefaults.standardUserDefaults
 
+    override fun contains(key: String): Boolean {
+        return userDefaults.objectForKey(key) != null
+    }
+
     override fun getString(key: String, defaultValue: String): String {
         return userDefaults.stringForKey(key) ?: defaultValue
     }
