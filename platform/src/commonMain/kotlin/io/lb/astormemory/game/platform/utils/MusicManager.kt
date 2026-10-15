@@ -1,9 +1,8 @@
 package io.lb.astormemory.game.platform.utils
 
 import io.lb.astormemory.game.platform.music.MusicPlayer
-import io.lb.astormemory.game.platform.music.MusicPlayerFactory
 
-class MusicManager(private val factory: MusicPlayerFactory) {
+class MusicManager(private val createPlayer: (fileName: String) -> MusicPlayer) {
     
     private val players = mutableMapOf<MusicTrack, MusicPlayer>()
     private var currentTrack: MusicTrack? = null
@@ -27,7 +26,7 @@ class MusicManager(private val factory: MusicPlayerFactory) {
         }
         
         val player = players.getOrPut(track) {
-            factory.createMusicPlayer(track.fileName)
+            createPlayer(track.fileName)
         }
         
         player.play(volume)

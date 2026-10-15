@@ -16,6 +16,7 @@ kotlin {
             implementation(projects.game.domain)
             implementation(projects.common.commonData)
             implementation(projects.common.commonShared)
+            implementation(projects.platform)
         }
     }
 }
