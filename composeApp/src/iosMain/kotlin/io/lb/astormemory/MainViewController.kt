@@ -8,10 +8,15 @@ import org.jetbrains.compose.resources.InternalResourceApi
 import org.koin.core.context.startKoin
 import platform.posix.exit
 
+private var isKoinInitialized = false
+
 @InternalResourceApi
 fun MainViewController() = ComposeUIViewController {
-    startKoin {
-        modules(appModules + platformDatabaseModule)
+    if (!isKoinInitialized) {
+        isKoinInitialized = true
+        startKoin {
+            modules(appModules + platformDatabaseModule)
+        }
     }
     AstorMemoryApp(
         onQuitApp = {
