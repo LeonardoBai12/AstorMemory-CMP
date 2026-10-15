@@ -32,6 +32,17 @@ internal class AppViewModel(
             initialValue = settingsRepository.settings.value.toAppState()
         )
 
+    fun onEvent(event: AppEvent) {
+        when (event) {
+            AppEvent.OnButtonClicked -> {
+                sfxAndMusicRepository.playButtonClickedSoundEffect()
+            }
+            AppEvent.OnOptionSelected -> {
+                sfxAndMusicRepository.playOptionSelectedSoundEffect()
+            }
+        }
+    }
+
     override fun onCleared() {
         sfxAndMusicRepository.release()
         super.onCleared()

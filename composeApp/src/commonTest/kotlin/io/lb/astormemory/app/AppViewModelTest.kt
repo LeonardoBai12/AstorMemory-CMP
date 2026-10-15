@@ -116,4 +116,24 @@ internal class AppViewModelTest {
 
         mocker.verify(exhaustive = false) { sfxAndMusicRepository.release() }
     }
+
+    @Test
+    fun `When OnButtonClicked expect click sound effect to be played`() {
+        mocker.every { sfxAndMusicRepository.playButtonClickedSoundEffect() } returns Unit
+        val viewModel = AppViewModel(settingsRepository, sfxAndMusicRepository, isSystemInDarkMode = false)
+
+        viewModel.onEvent(AppEvent.OnButtonClicked)
+
+        mocker.verify(exhaustive = false) { sfxAndMusicRepository.playButtonClickedSoundEffect() }
+    }
+
+    @Test
+    fun `When OnOptionSelected expect option selected sound effect to be played`() {
+        mocker.every { sfxAndMusicRepository.playOptionSelectedSoundEffect() } returns Unit
+        val viewModel = AppViewModel(settingsRepository, sfxAndMusicRepository, isSystemInDarkMode = false)
+
+        viewModel.onEvent(AppEvent.OnOptionSelected)
+
+        mocker.verify(exhaustive = false) { sfxAndMusicRepository.playOptionSelectedSoundEffect() }
+    }
 }

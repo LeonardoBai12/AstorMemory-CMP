@@ -212,9 +212,15 @@ internal class GameViewModelTest {
         stubAudio()
         viewModel = GameViewModel(useCases, sfxAndMusicRepository, 5)
 
-        viewModel.onEvent(GameEvent.GameStarted)
+        viewModel.state.test {
+            awaitLoaded()
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.playGameSong(5) }
+            viewModel.onEvent(GameEvent.GameStarted)
+
+            mocker.verify(exhaustive = false) { sfxAndMusicRepository.playGameSong(5) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -224,9 +230,15 @@ internal class GameViewModelTest {
         stubAudio()
         viewModel = GameViewModel(useCases, sfxAndMusicRepository, 5)
 
-        viewModel.onEvent(GameEvent.SongsPaused)
+        viewModel.state.test {
+            awaitLoaded()
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.pauseSongs() }
+            viewModel.onEvent(GameEvent.SongsPaused)
+
+            mocker.verify(exhaustive = false) { sfxAndMusicRepository.pauseSongs() }
+
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -236,9 +248,15 @@ internal class GameViewModelTest {
         stubAudio()
         viewModel = GameViewModel(useCases, sfxAndMusicRepository, 5)
 
-        viewModel.onEvent(GameEvent.SongResumed)
+        viewModel.state.test {
+            awaitLoaded()
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.resumeSong() }
+            viewModel.onEvent(GameEvent.SongResumed)
+
+            mocker.verify(exhaustive = false) { sfxAndMusicRepository.resumeSong() }
+
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -247,9 +265,15 @@ internal class GameViewModelTest {
         stubAudio()
         viewModel = GameViewModel(useCases, sfxAndMusicRepository, 5)
 
-        viewModel.onEvent(GameEvent.CardFlipped(0))
+        viewModel.state.test {
+            awaitLoaded()
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.playCardFlippedSoundEffect() }
+            viewModel.onEvent(GameEvent.CardFlipped(0))
+
+            mocker.verify(exhaustive = false) { sfxAndMusicRepository.playCardFlippedSoundEffect() }
+
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -258,10 +282,16 @@ internal class GameViewModelTest {
         stubAudio()
         viewModel = GameViewModel(useCases, sfxAndMusicRepository, 5)
 
-        viewModel.onEvent(GameEvent.CardMatched(id = 1))
+        viewModel.state.test {
+            awaitLoaded()
 
-        mocker.verify(exhaustive = false) {
-            sfxAndMusicRepository.playMatchCardSoundEffect(matches = 0, totalAmount = 5)
+            viewModel.onEvent(GameEvent.CardMatched(id = 1))
+
+            mocker.verify(exhaustive = false) {
+                sfxAndMusicRepository.playMatchCardSoundEffect(matches = 0, totalAmount = 5)
+            }
+
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -271,9 +301,15 @@ internal class GameViewModelTest {
         stubAudio()
         viewModel = GameViewModel(useCases, sfxAndMusicRepository, 5)
 
-        viewModel.onEvent(GameEvent.GameRestarted)
+        viewModel.state.test {
+            awaitLoaded()
 
-        mocker.verify(exhaustive = false) { sfxAndMusicRepository.stopShuffleSoundEffect() }
+            viewModel.onEvent(GameEvent.GameRestarted)
+
+            mocker.verify(exhaustive = false) { sfxAndMusicRepository.stopShuffleSoundEffect() }
+
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     private fun stubAudio() {

@@ -2,8 +2,10 @@ package io.lb.astormemory.app
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,6 +14,8 @@ import io.lb.astormemory.app.routes.GameRoute
 import io.lb.astormemory.app.routes.HighScoresRoute
 import io.lb.astormemory.app.routes.MenuRoute
 import io.lb.astormemory.app.routes.SettingsRoute
+import io.lb.astormemory.game.ds.components.ButtonSoundPlayer
+import io.lb.astormemory.game.ds.components.LocalButtonSoundPlayer
 import io.lb.astormemory.game.ds.effects.AstorMemoryTransitions
 import io.lb.astormemory.game.ds.theme.AstorMemoryChallengeTheme
 import io.lb.astormemory.navigation.AstorMemoryRoutes
@@ -26,39 +30,47 @@ fun AstorMemoryApp(onQuitApp: () -> Unit) {
     val isSystemInDarkMode = isSystemInDarkTheme()
     val appViewModel = koinViewModel<AppViewModel> { parametersOf(isSystemInDarkMode) }
     val appState by appViewModel.state.collectAsState()
+    val buttonSoundPlayer = remember(appViewModel) {
+        object : ButtonSoundPlayer {
+            override fun playClick() = appViewModel.onEvent(AppEvent.OnButtonClicked)
+            override fun playOptionSelected() = appViewModel.onEvent(AppEvent.OnOptionSelected)
+        }
+    }
 
-    AstorMemoryChallengeTheme(darkTheme = appState.isDarkMode) {
-        NavHost(
-            navController = navController,
-            startDestination = AstorMemoryRoutes.Menu,
-            enterTransition = { AstorMemoryTransitions.defaultEnterTransition },
-            exitTransition = { AstorMemoryTransitions.defaultExitTransition },
-            popEnterTransition = { AstorMemoryTransitions.defaultPopEnterTransition },
-            popExitTransition = { AstorMemoryTransitions.defaultPopExitTransition }
-        ) {
-            composable<AstorMemoryRoutes.Menu> {
-                MenuRoute(navController, appState, onQuitApp)
-            }
+    CompositionLocalProvider(LocalButtonSoundPlayer provides buttonSoundPlayer) {
+        AstorMemoryChallengeTheme(darkTheme = appState.isDarkMode) {
+            NavHost(
+                navController = navController,
+                startDestination = AstorMemoryRoutes.Menu,
+                enterTransition = { AstorMemoryTransitions.defaultEnterTransition },
+                exitTransition = { AstorMemoryTransitions.defaultExitTransition },
+                popEnterTransition = { AstorMemoryTransitions.defaultPopEnterTransition },
+                popExitTransition = { AstorMemoryTransitions.defaultPopExitTransition }
+            ) {
+                composable<AstorMemoryRoutes.Menu> {
+                    MenuRoute(navController, appState, onQuitApp)
+                }
 
-            composable<AstorMemoryRoutes.Game>(
-                enterTransition = { AstorMemoryTransitions.gameEnterTransition },
-                exitTransition = { AstorMemoryTransitions.gameExitTransition }
-            ) { backStackEntry ->
-                GameRoute(backStackEntry, navController, appState)
-            }
+                composable<AstorMemoryRoutes.Game>(
+                    enterTransition = { AstorMemoryTransitions.gameEnterTransition },
+                    exitTransition = { AstorMemoryTransitions.gameExitTransition }
+                ) { backStackEntry ->
+                    GameRoute(backStackEntry, navController, appState)
+                }
 
-            composable<AstorMemoryRoutes.HighScores> {
-                HighScoresRoute(navController, appState.isDarkMode)
-            }
+                composable<AstorMemoryRoutes.HighScores> {
+                    HighScoresRoute(navController, appState.isDarkMode)
+                }
 
-            composable<AstorMemoryRoutes.GameOver>(
-                enterTransition = { AstorMemoryTransitions.gameOverEnterTransition }
-            ) { backStackEntry ->
-                GameOverRoute(backStackEntry, navController, appState.isDarkMode)
-            }
+                composable<AstorMemoryRoutes.GameOver>(
+                    enterTransition = { AstorMemoryTransitions.gameOverEnterTransition }
+                ) { backStackEntry ->
+                    GameOverRoute(backStackEntry, navController, appState.isDarkMode)
+                }
 
-            composable<AstorMemoryRoutes.Settings> {
-                SettingsRoute(navController, appState)
+                composable<AstorMemoryRoutes.Settings> {
+                    SettingsRoute(navController, appState)
+                }
             }
         }
     }

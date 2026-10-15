@@ -49,30 +49,20 @@ import io.lb.astormemory.game.ds.theme.AstorMemoryChallengeTheme
 import io.lb.astormemory.game.ds.theme.ButtonConstants
 import io.lb.astormemory.game.ds.theme.Dimens
 import io.lb.astormemory.game.ds.theme.PrimaryRed
-import io.lb.astormemory.game.platform.audio.AudioPlayer
-import io.lb.astormemory.game.platform.preferences.AppPreferences
-import io.lb.astormemory.game.platform.utils.AstorMemoryAudio
-import io.lb.astormemory.game.platform.utils.PreferencesKeys
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
 
 private fun playClickSound(
     optionSelectedSound: Boolean = false,
     playSound: Boolean = true,
-    audioPlayer: AudioPlayer,
-    prefs: AppPreferences,
+    soundPlayer: ButtonSoundPlayer,
 ) {
     if (playSound) {
-        val isMuted = prefs.getBoolean(PreferencesKeys.IS_MUTED, false)
-        val isSoundEnabled = prefs.getBoolean(PreferencesKeys.IS_SOUND_EFFECTS_ENABLED, true)
-        if (isSoundEnabled) {
-            if (optionSelectedSound) {
-                AstorMemoryAudio.playOptionSelectEffect(isMuted, audioPlayer)
-                return
-            }
-            AstorMemoryAudio.playClickEffect(isMuted, audioPlayer)
+        if (optionSelectedSound) {
+            soundPlayer.playOptionSelected()
+        } else {
+            soundPlayer.playClick()
         }
     }
 }
@@ -87,8 +77,7 @@ fun MemoryGameButtonWithBackground(
     optionSelectedSound: Boolean = false,
     onClick: () -> Unit
 ) {
-    val audioPlayer: AudioPlayer = koinInject()
-    val prefs: AppPreferences = koinInject()
+    val soundPlayer = LocalButtonSoundPlayer.current
 
     Box(
         modifier = modifier
@@ -96,8 +85,7 @@ fun MemoryGameButtonWithBackground(
                 playClickSound(
                     playSound = playSound,
                     optionSelectedSound = optionSelectedSound,
-                    audioPlayer = audioPlayer,
-                    prefs = prefs
+                    soundPlayer = soundPlayer
                 )
                 onClick()
             }
