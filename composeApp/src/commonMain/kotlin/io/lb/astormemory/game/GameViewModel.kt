@@ -2,6 +2,7 @@ package io.lb.astormemory.game
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.lb.astormemory.game.domain.repository.SFXAndMusicRepository
 import io.lb.astormemory.game.domain.usecase.MemoryGameUseCases
 import io.lb.astormemory.game.ds.model.GameCard
 import io.lb.astormemory.game.platform.audio.AudioPlayer
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 
 internal class GameViewModel(
     private val useCases: MemoryGameUseCases,
+    private val sfxAndMusicRepository: SFXAndMusicRepository,
     private val audioPlayer: AudioPlayer,
     private val prefs: AppPreferences,
     private val amount: Int
@@ -110,6 +112,15 @@ internal class GameViewModel(
             }
             GameEvent.GameRestarted -> {
                 onGameRestarted()
+            }
+            GameEvent.GameStarted -> {
+                sfxAndMusicRepository.playGameSong(amount)
+            }
+            GameEvent.SongsPaused -> {
+                sfxAndMusicRepository.pauseSongs()
+            }
+            GameEvent.SongResumed -> {
+                sfxAndMusicRepository.resumeSong()
             }
         }
     }

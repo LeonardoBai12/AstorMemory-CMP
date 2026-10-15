@@ -2,6 +2,7 @@ package io.lb.astormemory.game
 
 import app.cash.turbine.test
 import io.lb.astormemory.game.domain.repository.MemoryGameRepository
+import io.lb.astormemory.game.domain.repository.SFXAndMusicRepository
 import io.lb.astormemory.game.domain.usecase.CalculateScoreUseCase
 import io.lb.astormemory.game.domain.usecase.GetAstorPairsUseCase
 import io.lb.astormemory.game.domain.usecase.GetScoresByAmountUseCase
@@ -29,10 +30,16 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-@UsesMocks(MemoryGameRepository::class, AudioPlayer::class, AppPreferences::class)
+@UsesMocks(
+    MemoryGameRepository::class,
+    SFXAndMusicRepository::class,
+    AudioPlayer::class,
+    AppPreferences::class
+)
 internal class GameViewModelTest {
     val mocker = Mocker()
     val repository: MemoryGameRepository = mocker.mock()
+    val sfxAndMusicRepository: SFXAndMusicRepository = mocker.mock()
     val audioPlayer: AudioPlayer = mocker.mock()
     val prefs: AppPreferences = mocker.mock()
     lateinit var useCases: MemoryGameUseCases
@@ -62,7 +69,7 @@ internal class GameViewModelTest {
         mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
         stubAudio()
 
-        viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
 
         assertTrue(viewModel.state.value.isLoading)
 
@@ -80,7 +87,7 @@ internal class GameViewModelTest {
         mocker.everySuspending { repository.getAstorPairs(5) } runs { throw Exception("Network error") }
         stubAudio()
 
-        viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
 
         viewModel.state.test {
             val emission = awaitItem()
@@ -94,7 +101,7 @@ internal class GameViewModelTest {
         mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
         stubAudio()
 
-        viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
 
         viewModel.state.test {
             awaitLoaded()
@@ -114,7 +121,7 @@ internal class GameViewModelTest {
         mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
         stubAudio()
 
-        viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
 
         viewModel.state.test {
             awaitLoaded()
@@ -134,7 +141,7 @@ internal class GameViewModelTest {
         mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
         stubAudio()
 
-        viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
 
         viewModel.state.test {
             awaitLoaded()
@@ -169,7 +176,7 @@ internal class GameViewModelTest {
         mocker.everySuspending { repository.insertScore(isAny(), isAny()) } returns Unit
         stubAudio()
 
-        viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
 
         viewModel.eventFlow.test {
             viewModel.onEvent(GameEvent.GameFinished)
@@ -186,7 +193,7 @@ internal class GameViewModelTest {
         mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
         stubAudio()
 
-        viewModel = GameViewModel(useCases, audioPlayer, prefs, 5)
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
 
         viewModel.state.test {
             awaitLoaded()
@@ -202,6 +209,42 @@ internal class GameViewModelTest {
             assertEquals(500, emission.score)
             assertTrue(emission.cards.none { it.isFlipped || it.isMatched })
         }
+    }
+
+    @Test
+    fun `When the game is started, expect the game song to be played`() = runTest {
+        mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
+        mocker.every { sfxAndMusicRepository.playGameSong(5) } returns Unit
+        stubAudio()
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
+
+        viewModel.onEvent(GameEvent.GameStarted)
+
+        mocker.verify(exhaustive = false) { sfxAndMusicRepository.playGameSong(5) }
+    }
+
+    @Test
+    fun `When songs are paused, expect the songs to be paused`() = runTest {
+        mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
+        mocker.every { sfxAndMusicRepository.pauseSongs() } returns Unit
+        stubAudio()
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
+
+        viewModel.onEvent(GameEvent.SongsPaused)
+
+        mocker.verify(exhaustive = false) { sfxAndMusicRepository.pauseSongs() }
+    }
+
+    @Test
+    fun `When song is resumed, expect the last song to be resumed`() = runTest {
+        mocker.everySuspending { repository.getAstorPairs(5) } returns astorCards()
+        mocker.every { sfxAndMusicRepository.resumeSong() } returns Unit
+        stubAudio()
+        viewModel = GameViewModel(useCases, sfxAndMusicRepository, audioPlayer, prefs, 5)
+
+        viewModel.onEvent(GameEvent.SongResumed)
+
+        mocker.verify(exhaustive = false) { sfxAndMusicRepository.resumeSong() }
     }
 
     private fun stubAudio() {

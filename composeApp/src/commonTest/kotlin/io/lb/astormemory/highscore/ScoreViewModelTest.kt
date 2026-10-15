@@ -2,6 +2,7 @@ package io.lb.astormemory.highscore
 
 import app.cash.turbine.test
 import io.lb.astormemory.game.domain.repository.MemoryGameRepository
+import io.lb.astormemory.game.domain.repository.SFXAndMusicRepository
 import io.lb.astormemory.game.domain.usecase.CalculateScoreUseCase
 import io.lb.astormemory.game.domain.usecase.GetAstorPairsUseCase
 import io.lb.astormemory.game.domain.usecase.GetScoresByAmountUseCase
@@ -26,10 +27,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-@UsesMocks(MemoryGameRepository::class)
+@UsesMocks(MemoryGameRepository::class, SFXAndMusicRepository::class)
 internal class ScoreViewModelTest {
     val mocker = Mocker()
     val repository: MemoryGameRepository = mocker.mock()
+    val sfxAndMusicRepository: SFXAndMusicRepository = mocker.mock()
     lateinit var useCases: MemoryGameUseCases
     lateinit var viewModel: ScoreViewModel
 
@@ -56,7 +58,7 @@ internal class ScoreViewModelTest {
     fun `When the view model is created, expect scores to be fetched`() = runTest {
         mocker.everySuspending { repository.getScores() } returns scores()
 
-        viewModel = ScoreViewModel(useCases)
+        viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
 
         assertTrue(viewModel.state.value.isLoading)
         delay(500)
@@ -75,7 +77,7 @@ internal class ScoreViewModelTest {
     fun `When scores fail to load, expect an error message`() = runTest {
         mocker.everySuspending { repository.getScores() } runs { throw Exception("Network error") }
 
-        viewModel = ScoreViewModel(useCases)
+        viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
         delay(500)
 
         viewModel.state.test {
@@ -90,7 +92,7 @@ internal class ScoreViewModelTest {
     fun `When scores load, expect filters to be populated with distinct amounts plus zero`() = runTest {
         mocker.everySuspending { repository.getScores() } returns scores()
 
-        viewModel = ScoreViewModel(useCases)
+        viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
         delay(500)
 
         viewModel.state.test {
@@ -110,7 +112,7 @@ internal class ScoreViewModelTest {
         mocker.everySuspending { repository.getScores() } returns scores()
         mocker.everySuspending { repository.getScoresByAmount(5) } returns filteredScores
 
-        viewModel = ScoreViewModel(useCases)
+        viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
         delay(500)
 
         viewModel.state.test {
@@ -129,7 +131,7 @@ internal class ScoreViewModelTest {
     fun `When OnRequestScores with zero amount, expect all scores`() = runTest {
         mocker.everySuspending { repository.getScores() } returns scores()
 
-        viewModel = ScoreViewModel(useCases)
+        viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
         delay(500)
 
         viewModel.state.test {
@@ -149,7 +151,7 @@ internal class ScoreViewModelTest {
         mocker.everySuspending { repository.getScores() } returns scores()
         mocker.everySuspending { repository.getScoresByAmount(5) } runs { throw Exception("DB error") }
 
-        viewModel = ScoreViewModel(useCases)
+        viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
         delay(500)
 
         viewModel.state.test {
@@ -162,6 +164,39 @@ internal class ScoreViewModelTest {
             assertEquals("DB error", emission.message)
             assertTrue(emission.scores.isEmpty())
         }
+    }
+
+    @Test
+    fun `When OnPlaySong, expect high score song to be played`() = runTest {
+        mocker.everySuspending { repository.getScores() } returns scores()
+        mocker.every { sfxAndMusicRepository.playHighScoreSong() } returns Unit
+        viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
+
+        viewModel.onEvent(ScoresEvent.OnPlaySong)
+
+        mocker.verify(exhaustive = false) { sfxAndMusicRepository.playHighScoreSong() }
+    }
+
+    @Test
+    fun `When OnPauseSongs, expect songs to be paused`() = runTest {
+        mocker.everySuspending { repository.getScores() } returns scores()
+        mocker.every { sfxAndMusicRepository.pauseSongs() } returns Unit
+        viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
+
+        viewModel.onEvent(ScoresEvent.OnPauseSongs)
+
+        mocker.verify(exhaustive = false) { sfxAndMusicRepository.pauseSongs() }
+    }
+
+    @Test
+    fun `When OnResumeSong, expect last song to be resumed`() = runTest {
+        mocker.everySuspending { repository.getScores() } returns scores()
+        mocker.every { sfxAndMusicRepository.resumeSong() } returns Unit
+        viewModel = ScoreViewModel(useCases, sfxAndMusicRepository)
+
+        viewModel.onEvent(ScoresEvent.OnResumeSong)
+
+        mocker.verify(exhaustive = false) { sfxAndMusicRepository.resumeSong() }
     }
 
     private fun scores() = listOf(

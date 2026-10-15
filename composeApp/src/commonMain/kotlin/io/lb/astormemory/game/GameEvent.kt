@@ -37,4 +37,19 @@ sealed interface GameEvent {
      * Represents the game being restarted.
      */
     data object GameRestarted : GameEvent
+
+    /**
+     * Represents the game being started, playing the song according to the amount of cards.
+     */
+    data object GameStarted : GameEvent
+
+    /**
+     * Represents the songs being paused.
+     */
+    data object SongsPaused : GameEvent
+
+    /**
+     * Represents the last song being resumed.
+     */
+    data object SongResumed : GameEvent
 }

@@ -9,6 +9,7 @@ val viewModelModule = module {
     viewModel { params ->
         GameViewModel(
             useCases = get(),
+            sfxAndMusicRepository = get(),
             audioPlayer = get(),
             prefs = get(),
             amount = params.get()
@@ -16,7 +17,8 @@ val viewModelModule = module {
     }
     viewModel {
         ScoreViewModel(
-            useCases = get()
+            useCases = get(),
+            sfxAndMusicRepository = get()
         )
     }
 }

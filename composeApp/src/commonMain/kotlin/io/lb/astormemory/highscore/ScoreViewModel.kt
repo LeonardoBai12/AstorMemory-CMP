@@ -2,6 +2,7 @@ package io.lb.astormemory.highscore
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.lb.astormemory.game.domain.repository.SFXAndMusicRepository
 import io.lb.astormemory.game.domain.usecase.MemoryGameUseCases
 import io.lb.astormemory.shared.flow.Resource
 import io.lb.astormemory.shared.model.Score
@@ -23,9 +24,11 @@ private const val AMOUNT_TAKEN = 10
  * ViewModel for the scores screen.
  *
  * @property useCases the use cases for the memory game.
+ * @property sfxAndMusicRepository the repository to play the songs and sound effects.
  */
 internal class ScoreViewModel(
-    private val useCases: MemoryGameUseCases
+    private val useCases: MemoryGameUseCases,
+    private val sfxAndMusicRepository: SFXAndMusicRepository
 ) : ViewModel() {
     
     private val _state: MutableStateFlow<ScoreState> = MutableStateFlow(ScoreState())
@@ -46,6 +49,15 @@ internal class ScoreViewModel(
                 } else {
                     getScores()
                 }
+            }
+            ScoresEvent.OnPlaySong -> {
+                sfxAndMusicRepository.playHighScoreSong()
+            }
+            ScoresEvent.OnPauseSongs -> {
+                sfxAndMusicRepository.pauseSongs()
+            }
+            ScoresEvent.OnResumeSong -> {
+                sfxAndMusicRepository.resumeSong()
             }
         }
     }
