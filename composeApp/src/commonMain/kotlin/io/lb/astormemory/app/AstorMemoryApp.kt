@@ -85,35 +85,10 @@ fun AstorMemoryApp(onQuitApp: () -> Unit) {
                 enterTransition = { AstorMemoryTransitions.gameEnterTransition },
                 exitTransition = { AstorMemoryTransitions.gameExitTransition }
             ) { backStackEntry ->
-                val game = backStackEntry.toRoute<AstorMemoryRoutes.Game>()
-
-                LaunchedEffect(appState.isMuted, game.amount) {
-                    if (!appState.isMuted) {
-                        val (track, volume) = when {
-                            game.amount == 1 -> MusicManager.MusicTrack.VICTORY_ROAD to 1.0f
-                            game.amount < 8 -> MusicManager.MusicTrack.WILD to 1.0f
-                            game.amount >= 20 -> MusicManager.MusicTrack.FINAL_BATTLE to 0.85f
-                            game.amount >= 12 -> MusicManager.MusicTrack.GYM_LEADER to 0.85f
-                            else -> MusicManager.MusicTrack.TRAINER to 0.85f
-                        }
-                        musicManager.play(track, volume)
-                    } else {
-                        musicManager.pauseAll()
-                    }
-                }
-
                 GameRoute(backStackEntry, navController, appState, audioPlayer)
             }
 
             composable<AstorMemoryRoutes.HighScores> {
-                LaunchedEffect(appState.isMuted) {
-                    if (!appState.isMuted) {
-                        musicManager.play(MusicManager.MusicTrack.HIGHSCORES)
-                    } else {
-                        musicManager.pauseAll()
-                    }
-                }
-
                 HighScoresRoute(navController, appState.isDarkMode)
             }
 

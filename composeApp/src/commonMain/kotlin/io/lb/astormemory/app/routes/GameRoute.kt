@@ -1,6 +1,7 @@
 package io.lb.astormemory.app.routes
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavBackStackEntry
@@ -9,6 +10,7 @@ import androidx.navigation.toRoute
 import io.lb.astormemory.app.AppState
 import io.lb.astormemory.app.getEffectiveCardsPerColumn
 import io.lb.astormemory.app.getEffectiveCardsPerLine
+import io.lb.astormemory.game.GameEvent
 import io.lb.astormemory.game.GameScreen
 import io.lb.astormemory.game.GameViewModel
 import io.lb.astormemory.game.platform.audio.AudioPlayer
@@ -27,7 +29,11 @@ fun GameRoute(
     val game = backStackEntry.toRoute<AstorMemoryRoutes.Game>()
     val viewModel = koinViewModel<GameViewModel> { parametersOf(game.amount) }
     val state by viewModel.state.collectAsState()
-    
+
+    LaunchedEffect(game.amount) {
+        viewModel.onEvent(GameEvent.GameStarted)
+    }
+
     GameScreen(
         navController = navController,
         state = state,
